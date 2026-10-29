@@ -3,10 +3,12 @@ package io.github.t3wv.nfse.nacional.classes.nfsenacional;
 import org.simpleframework.xml.Element;
 
 public class NFSeSefinNacionalInfoIBSCBSInfoTributosGIBSCBS {
-    @Element(name = "CST")
-    protected String CST;
-    @Element(name = "cClassTrib")
-    protected String cClassTrib;
+    // Só leitura de NFS-e anteriores à NT SE/CGNFS-e 009, em que CST e cClassTrib ficavam neste grupo.
+    // Sem setter: na DPS nova eles vão em trib (NFSeSefinNacionalInfoIBSCBSInfoTributos).
+    @Element(name = "CST", required = false)
+    protected String cstLeiauteAnterior;
+    @Element(name = "cClassTrib", required = false)
+    protected String cClassTribLeiauteAnterior;
     @Element(name = "cCredPres", required = false)
     protected String cCredPres;
     @Element(name = "gTribRegular", required = false)
@@ -15,39 +17,19 @@ public class NFSeSefinNacionalInfoIBSCBSInfoTributosGIBSCBS {
     protected NFSeSefinNacionalInfoIBSCBSInfoTributosGIBSCBSGDif gDif;
 
     /**
-     * Código de Situação Tributária do IBS e da CBS
-     * @return
+     * CST de uma NFS-e anterior à NT SE/CGNFS-e 009; nas novas, use NFSeSefinNacionalInfoIBSCBSInfoTributos#getCST
      */
-    public String getCST() {
-        return CST;
+    @Deprecated
+    public String getCstLeiauteAnterior() {
+        return cstLeiauteAnterior;
     }
 
     /**
-     * Código de Situação Tributária do IBS e da CBS
-     * @param CST
-     * @return NFSeSefinNacionalInfoIBSCBSInfoTributosGIBSCBS
+     * cClassTrib de uma NFS-e anterior à NT SE/CGNFS-e 009; nas novas, use NFSeSefinNacionalInfoIBSCBSInfoTributos#getcClassTrib
      */
-    public NFSeSefinNacionalInfoIBSCBSInfoTributosGIBSCBS setCST(String CST) {
-        this.CST = CST;
-        return this;
-    }
-
-    /**
-     * Código de Classificação Tributária do IBS e da CBS
-     * @return
-     */
-    public String getcClassTrib() {
-        return cClassTrib;
-    }
-
-    /**
-     * Código de Classificação Tributária do IBS e da CBS
-     * @param cClassTrib
-     * @return NFSeSefinNacionalInfoIBSCBSInfoTributosGIBSCBS
-     */
-    public NFSeSefinNacionalInfoIBSCBSInfoTributosGIBSCBS setcClassTrib(String cClassTrib) {
-        this.cClassTrib = cClassTrib;
-        return this;
+    @Deprecated
+    public String getcClassTribLeiauteAnterior() {
+        return cClassTribLeiauteAnterior;
     }
 
     public String getcCredPres() {
@@ -80,9 +62,7 @@ public class NFSeSefinNacionalInfoIBSCBSInfoTributosGIBSCBS {
     @Override
     public String toString() {
         return "NFSeSefinNacionalInfoIBSCBSInfoTributosGIBSCBS{" +
-                "CST='" + CST + '\'' +
-                ", cClassTrib='" + cClassTrib + '\'' +
-                ", cCredPres='" + cCredPres + '\'' +
+                "cCredPres='" + cCredPres + '\'' +
                 ", gTribRegular=" + gTribRegular +
                 ", gDif=" + gDif +
                 '}';

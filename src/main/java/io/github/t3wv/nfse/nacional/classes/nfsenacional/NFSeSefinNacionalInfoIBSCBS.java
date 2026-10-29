@@ -8,11 +8,13 @@ import java.util.List;
 
 @Root(name = "IBSCBS")
 public class NFSeSefinNacionalInfoIBSCBS {
-    @Element(name="finNFSe")
-    protected NFSeSefinNacionalInfoIBSCBSFinNFSe finNFSe;
+    // Só leitura de NFS-e anteriores à NT SE/CGNFS-e 009, em que o finNFSe ficava neste grupo.
+    // Sem setter: na DPS nova o campo vai em infDPS (NFSeSefinNacionalInfDPS#setFinalidade).
+    @Element(name="finNFSe", required = false)
+    protected NFSeSefinNacionalInfoIBSCBSFinNFSe finNFSeLeiauteAnterior;
     @Element(name="indFinal", required = false)
     protected Boolean indFinal;
-    @Element(name="cIndOp")
+    @Element(name="cIndOp", required = false)
     protected String cIndOp;
     @Element(name="tpOper", required = false)
     protected NFSeSefinNacionalInfoIBSCBSTpOper tpOper;
@@ -26,30 +28,13 @@ public class NFSeSefinNacionalInfoIBSCBS {
     protected NFSeSefinNacionalInfoIBSCBSInfoDest dest;
     @Element(name="imovel", required = false)
     protected NFSeSefinNacionalInfoIBSCBSInfoImovel imovel;
+    @ElementList(name="bensMoveis", entry = "bensMoveis", inline = true, required = false)
+    protected List<NFSeSefinNacionalInfoIBSCBSBensMoveis> bensMoveis;
     @Element(name="valores")
     protected NFSeSefinNacionalInfoIBSCBSInfoValoresIBSCBS valores;
 
-    public NFSeSefinNacionalInfoIBSCBS() {
-        this.finNFSe = NFSeSefinNacionalInfoIBSCBSFinNFSe.REGULAR;
-    }
 
-    /**
-     * Indicador da finalidade da emissão de NFS-e
-     * @return finNFSe
-     */
-    public NFSeSefinNacionalInfoIBSCBSFinNFSe getFinNFSe() {
-        return finNFSe;
-    }
 
-    /**
-     * Indicador da finalidade da emissão de NFS-e
-     * @param finNFSe the finNFSe to set
-     * @return NFSeSefinNacionalInfoIBSCBS
-     */
-    public NFSeSefinNacionalInfoIBSCBS setFinNFSe(NFSeSefinNacionalInfoIBSCBSFinNFSe finNFSe) {
-        this.finNFSe = finNFSe;
-        return this;
-    }
 
     /**
      * Indica operação de uso ou consumo pessoal (art. 57)
@@ -198,6 +183,33 @@ public class NFSeSefinNacionalInfoIBSCBS {
     }
 
     /**
+     * finNFSe de uma NFS-e anterior à NT SE/CGNFS-e 009 (lido daqui); nas novas, use NFSeSefinNacionalInfDPS#getFinalidade
+     * @return finNFSe do leiaute anterior, ou null
+     */
+    @Deprecated
+    public NFSeSefinNacionalInfoIBSCBSFinNFSe getFinNFSeLeiauteAnterior() {
+        return finNFSeLeiauteAnterior;
+    }
+
+    /**
+     * Grupo de informações de bens móveis (NCM) no fornecimento (até 1.000 registros)
+     * @return bensMoveis
+     */
+    public List<NFSeSefinNacionalInfoIBSCBSBensMoveis> getBensMoveis() {
+        return bensMoveis;
+    }
+
+    /**
+     * Grupo de informações de bens móveis (NCM) no fornecimento (até 1.000 registros)
+     * @param bensMoveis
+     * @return NFSeSefinNacionalInfoIBSCBS
+     */
+    public NFSeSefinNacionalInfoIBSCBS setBensMoveis(List<NFSeSefinNacionalInfoIBSCBSBensMoveis> bensMoveis) {
+        this.bensMoveis = bensMoveis;
+        return this;
+    }
+
+    /**
      * Grupo de informações relativas aos valores do serviço prestado para IBS e CBS
      * @return
      */
@@ -218,8 +230,7 @@ public class NFSeSefinNacionalInfoIBSCBS {
     @Override
     public String toString() {
         return "NFSeSefinNacionalInfoIBSCBS{" +
-                "finNFSe=" + finNFSe +
-                ", indFinal=" + indFinal +
+                "indFinal=" + indFinal +
                 ", cIndOp='" + cIndOp + '\'' +
                 ", tpOper=" + tpOper +
                 ", gRefNFSe='" + gRefNFSe + '\'' +
@@ -227,6 +238,7 @@ public class NFSeSefinNacionalInfoIBSCBS {
                 ", indDest=" + indDest +
                 ", dest=" + dest +
                 ", imovel=" + imovel +
+                ", bensMoveis=" + bensMoveis +
                 ", valores=" + valores +
                 '}';
     }

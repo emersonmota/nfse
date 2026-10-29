@@ -145,7 +145,7 @@ public class WSSefinNFSe implements NFSeLogger {
 
 
         //cria os validatores
-        final var xmlValidator = new NFSeXmlValidator(new StreamSource(WSSefinNFSe.class.getClassLoader().getResource("NFSeNacional_nfse-esquemas_xsd-v1-01-20260209/Schemas/1.01/DPS_v1.01.xsd").toURI().toString()));
+        final var xmlValidator = new NFSeXmlValidator(new StreamSource(WSSefinNFSe.class.getClassLoader().getResource("NFSeNacional_nfse-esquemas_xsd-v1-01-20261020/DPS_v1.01.xsd").toURI().toString()));
 
         //gera o xml e valida
         final var xmlNaoAssinado = dps.toXml();

@@ -7,8 +7,11 @@ import java.math.BigDecimal;
 
 @Root(name = "ValoresNFSe")
 public class NFSeSefinNacionalValoresNFSe {
+    @Element(name = "vCalcAjusteBCISSQN", required = false)
+    protected BigDecimal vCalcAjusteBCISSQN;
+    // Só leitura de NFS-e anteriores à NT SE/CGNFS-e 009 (substituído pelo vCalcAjusteBCISSQN)
     @Element(name = "vCalcDR", required = false)
-    protected BigDecimal vCalcDR;
+    protected BigDecimal vCalcDRLeiauteAnterior;
     @Element(name = "tpBM", required = false)
     protected NFSeSefinNacionalValoresNFSeTipoBeneficioMunicipal tpBM;
     @Element(name = "vCalcBM", required = false)
@@ -25,13 +28,24 @@ public class NFSeSefinNacionalValoresNFSe {
     protected BigDecimal vLiq;
 
 
-    public BigDecimal getVCalcDR() {
-        return vCalcDR;
+    /**
+     * Valor calculado do ajuste da base de cálculo do ISSQN (NT SE/CGNFS-e 009; substitui o vCalcDR)
+     */
+    public BigDecimal getVCalcAjusteBCISSQN() {
+        return vCalcAjusteBCISSQN;
     }
 
-    public NFSeSefinNacionalValoresNFSe setVCalcDR(BigDecimal value) {
-        this.vCalcDR = value;
+    public NFSeSefinNacionalValoresNFSe setVCalcAjusteBCISSQN(BigDecimal value) {
+        this.vCalcAjusteBCISSQN = value;
         return this;
+    }
+
+    /**
+     * vCalcDR de uma NFS-e anterior à NT SE/CGNFS-e 009
+     */
+    @Deprecated
+    public BigDecimal getVCalcDRLeiauteAnterior() {
+        return vCalcDRLeiauteAnterior;
     }
 
     public NFSeSefinNacionalValoresNFSeTipoBeneficioMunicipal getTpBM() {

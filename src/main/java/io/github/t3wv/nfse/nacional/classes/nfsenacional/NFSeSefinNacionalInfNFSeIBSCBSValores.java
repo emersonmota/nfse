@@ -5,11 +5,18 @@ import org.simpleframework.xml.Element;
 import java.math.BigDecimal;
 
 public class NFSeSefinNacionalInfNFSeIBSCBSValores {
-    @Element(name = "vBC")
+    @Element(name = "vBC", required = false)
     private BigDecimal vBC;
 
+    @Element(name = "vCalcAjusteBCLocImoveis", required = false)
+    private BigDecimal vCalcAjusteBCLocImoveis;
+
+    @Element(name = "vCalcAjusteBCIBSCBS", required = false)
+    private BigDecimal vCalcAjusteBCIBSCBS;
+
+    // Só leitura de NFS-e anteriores à NT SE/CGNFS-e 009 (substituído pelo vCalcAjusteBCIBSCBS)
     @Element(name = "vCalcReeRepRes", required = false)
-    private BigDecimal vCalcReeRepRes;
+    private BigDecimal vCalcReeRepResLeiauteAnterior;
 
     @Element(name = "uf")
     private NFSeSefinNacionalInfNFSeIBSCBSValoresUF uf;
@@ -29,12 +36,35 @@ public class NFSeSefinNacionalInfNFSeIBSCBSValores {
         return this;
     }
 
-    public BigDecimal getvCalcReeRepRes() {
-        return vCalcReeRepRes;
+    /**
+     * Valor calculado do ajuste da base de cálculo do IBS/CBS na locação de imóveis (NT SE/CGNFS-e 009)
+     */
+    public BigDecimal getvCalcAjusteBCLocImoveis() {
+        return vCalcAjusteBCLocImoveis;
     }
 
-    public NFSeSefinNacionalInfNFSeIBSCBSValores setvCalcReeRepRes(BigDecimal vCalcReeRepRes) {
-        this.vCalcReeRepRes = vCalcReeRepRes;
+    public NFSeSefinNacionalInfNFSeIBSCBSValores setvCalcAjusteBCLocImoveis(BigDecimal vCalcAjusteBCLocImoveis) {
+        this.vCalcAjusteBCLocImoveis = vCalcAjusteBCLocImoveis;
+        return this;
+    }
+
+    /**
+     * Valor calculado do ajuste da base de cálculo do IBS/CBS por documentos (NT SE/CGNFS-e 009; substitui o vCalcReeRepRes)
+     */
+    public BigDecimal getvCalcAjusteBCIBSCBS() {
+        return vCalcAjusteBCIBSCBS;
+    }
+
+    /**
+     * vCalcReeRepRes de uma NFS-e anterior à NT SE/CGNFS-e 009
+     */
+    @Deprecated
+    public BigDecimal getvCalcReeRepResLeiauteAnterior() {
+        return vCalcReeRepResLeiauteAnterior;
+    }
+
+    public NFSeSefinNacionalInfNFSeIBSCBSValores setvCalcAjusteBCIBSCBS(BigDecimal vCalcAjusteBCIBSCBS) {
+        this.vCalcAjusteBCIBSCBS = vCalcAjusteBCIBSCBS;
         return this;
     }
 
