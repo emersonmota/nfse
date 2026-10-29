@@ -14,10 +14,6 @@ public class NFSeSefinNacionalInfNFSeIBSCBSValores {
     @Element(name = "vCalcAjusteBCIBSCBS", required = false)
     private BigDecimal vCalcAjusteBCIBSCBS;
 
-    // Só leitura de NFS-e anteriores à NT SE/CGNFS-e 009 (substituído pelo vCalcAjusteBCIBSCBS)
-    @Element(name = "vCalcReeRepRes", required = false)
-    private BigDecimal vCalcReeRepResLeiauteAnterior;
-
     @Element(name = "uf")
     private NFSeSefinNacionalInfNFSeIBSCBSValoresUF uf;
 
@@ -53,14 +49,6 @@ public class NFSeSefinNacionalInfNFSeIBSCBSValores {
      */
     public BigDecimal getvCalcAjusteBCIBSCBS() {
         return vCalcAjusteBCIBSCBS;
-    }
-
-    /**
-     * vCalcReeRepRes de uma NFS-e anterior à NT SE/CGNFS-e 009
-     */
-    @Deprecated
-    public BigDecimal getvCalcReeRepResLeiauteAnterior() {
-        return vCalcReeRepResLeiauteAnterior;
     }
 
     public NFSeSefinNacionalInfNFSeIBSCBSValores setvCalcAjusteBCIBSCBS(BigDecimal vCalcAjusteBCIBSCBS) {

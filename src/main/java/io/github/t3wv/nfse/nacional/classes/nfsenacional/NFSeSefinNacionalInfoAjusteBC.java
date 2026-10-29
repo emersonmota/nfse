@@ -58,7 +58,8 @@ public class NFSeSefinNacionalInfoAjusteBC {
     }
 
     public NFSeSefinNacionalInfoAjusteBC setDocumentos(List<NFSeSefinNacionalDocAjusteBC> documentos) {
-        this.documentos = documentos == null ? null : new ArrayList<>(documentos);
+        // Lista vazia vira null: TCListaDocAjusteBC exige ao menos um docAjusteBC
+        this.documentos = documentos == null || documentos.isEmpty() ? null : new ArrayList<>(documentos);
         return this;
     }
 

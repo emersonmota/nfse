@@ -11,7 +11,8 @@ import java.util.List;
  */
 @Root(name = "imovel")
 public class NFSeSefinNacionalInfoIBSCBSInfoImovel {
-    @Element(name = "cMun")
+    // Obrigatório no XSD da NT 009; required = false só para ler o imovel do leiaute anterior, sem cMun
+    @Element(name = "cMun", required = false)
     protected String cMun;
     @Element(name = "gLocacao", required = false)
     protected NFSeSefinNacionalInfoIBSCBSImovelLocacao gLocacao;

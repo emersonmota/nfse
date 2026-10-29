@@ -4,22 +4,20 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Root(name = "IBSCBS")
 public class NFSeSefinNacionalInfoIBSCBS {
-    // Só leitura de NFS-e anteriores à NT SE/CGNFS-e 009, em que o finNFSe ficava neste grupo.
-    // Sem setter: na DPS nova o campo vai em infDPS (NFSeSefinNacionalInfDPS#setFinalidade).
-    @Element(name="finNFSe", required = false)
-    protected NFSeSefinNacionalInfoIBSCBSFinNFSe finNFSeLeiauteAnterior;
     @Element(name="indFinal", required = false)
     protected Boolean indFinal;
     @Element(name="cIndOp", required = false)
     protected String cIndOp;
     @Element(name="tpOper", required = false)
     protected NFSeSefinNacionalInfoIBSCBSTpOper tpOper;
+    // ArrayList, não List: com o tipo da interface o simple-xml grava o atributo class, que o XSD recusa
     @ElementList(name="gRefNFSe", entry = "refNFSe", required = false)
-    protected List<String> gRefNFSe;
+    protected ArrayList<String> gRefNFSe;
     @Element(name="tpEnteGov", required = false)
     protected NFSeSefinNacionalInfoIBSCBSTpEnteGov tpEnteGov;
     @Element(name="indDest")
@@ -104,7 +102,7 @@ public class NFSeSefinNacionalInfoIBSCBS {
      * @return NFSeSefinNacionalInfoIBSCBS
      */
     public NFSeSefinNacionalInfoIBSCBS setgRefNFSe(List<String> gRefNFSe) {
-        this.gRefNFSe = gRefNFSe;
+        this.gRefNFSe = gRefNFSe == null || gRefNFSe.isEmpty() ? null : new ArrayList<>(gRefNFSe);
         return this;
     }
 
@@ -180,15 +178,6 @@ public class NFSeSefinNacionalInfoIBSCBS {
     public NFSeSefinNacionalInfoIBSCBS setImovel(NFSeSefinNacionalInfoIBSCBSInfoImovel imovel) {
         this.imovel = imovel;
         return this;
-    }
-
-    /**
-     * finNFSe de uma NFS-e anterior à NT SE/CGNFS-e 009 (lido daqui); nas novas, use NFSeSefinNacionalInfDPS#getFinalidade
-     * @return finNFSe do leiaute anterior, ou null
-     */
-    @Deprecated
-    public NFSeSefinNacionalInfoIBSCBSFinNFSe getFinNFSeLeiauteAnterior() {
-        return finNFSeLeiauteAnterior;
     }
 
     /**

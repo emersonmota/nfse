@@ -20,8 +20,6 @@ import java.util.List;
  */
 public class NFSeSefinNacionalDPSNT009Test {
 
-    private static final String XSD_DPS = "NFSeNacional_nfse-esquemas_xsd-v1-01-20261020/DPS_v1.01.xsd";
-
     @Test
     public void dpsSimplesValidaNoLeiauteNT009() throws Exception {
         final var dps = dpsBase();
@@ -79,20 +77,48 @@ public class NFSeSefinNacionalDPSNT009Test {
     }
 
     @Test
-    public void dpsNoLeiauteAnteriorAindaELida() throws Exception {
-        // Leiaute anterior à NT 009: finNFSe dentro do IBSCBS e CST/cClassTrib dentro do gIBSCBS
+    public void dpsNoLeiauteAnteriorAindaELidaSemEstrito() throws Exception {
+        // Leiaute anterior à NT 009: finNFSe no IBSCBS, CST/cClassTrib no gIBSCBS, vDedRed,
+        // gReeRepRes e imovel com cCIB. As NFS-e recebidas são lidas sem modo estrito
+        // (NFSeSefinNacionalGetResponse, NFSeSefinNacionalNFSePostResponseSucesso).
         final var xmlAnterior = dpsBase().toXml()
                 .replace("<finNFSe>0</finNFSe>", "")
                 .replace("<IBSCBS>", "<IBSCBS><finNFSe>0</finNFSe>")
                 .replace("<trib><CST>000</CST><cClassTrib>000001</cClassTrib></trib>",
-                        "<trib><gIBSCBS><CST>000</CST><cClassTrib>000001</cClassTrib></gIBSCBS></trib>");
+                        "<gReeRepRes><documentos><docOutro><nDoc>1</nDoc><xDoc>Doc</xDoc></docOutro>"
+                                + "<dtEmiDoc>2026-01-01</dtEmiDoc><dtCompDoc>2026-01-01</dtCompDoc>"
+                                + "<tpReeRepRes>99</tpReeRepRes><vlrReeRepRes>1.00</vlrReeRepRes></documentos></gReeRepRes>"
+                                + "<trib><gIBSCBS><CST>000</CST><cClassTrib>000001</cClassTrib></gIBSCBS></trib>")
+                .replace("<indDest>0</indDest>", "<indDest>0</indDest><imovel><cCIB>12345678</cCIB></imovel>")
+                .replace("</vServPrest>", "</vServPrest><vDedRed><pDR>10.00</pDR></vDedRed>");
 
-        final var lida = new NFSePersister().read(NFSeSefinNacionalDPS.class, xmlAnterior);
+        Assertions.assertThrows(Exception.class, () -> new NFSePersister().read(NFSeSefinNacionalDPS.class, xmlAnterior));
+        final var lida = new NFSePersister(false).read(NFSeSefinNacionalDPS.class, xmlAnterior);
 
-        final var ibscbs = lida.getInfDPS().getInfoIBSCBS();
-        Assertions.assertEquals(NFSeSefinNacionalInfoIBSCBSFinNFSe.REGULAR, ibscbs.getFinNFSeLeiauteAnterior());
-        Assertions.assertEquals("000", ibscbs.getValores().getTrib().getgIBSCBS().getCstLeiauteAnterior());
-        Assertions.assertEquals("000001", ibscbs.getValores().getTrib().getgIBSCBS().getcClassTribLeiauteAnterior());
+        Assertions.assertEquals("90010", String.valueOf(lida.getInfDPS().getNumeroDPS()));
+        Assertions.assertEquals(NFSeSefinNacionalInfoIBSCBSIndDest.TOMADOR, lida.getInfDPS().getInfoIBSCBS().getIndDest());
+    }
+
+    @Test
+    public void valoresDaNfseNoLeiauteAnteriorAindaSaoLidosSemEstrito() throws Exception {
+        final var valores = new NFSePersister(false).read(NFSeSefinNacionalValoresNFSe.class,
+                "<valores><vCalcDR>10.00</vCalcDR><vLiq>90.00</vLiq></valores>");
+
+        Assertions.assertEquals(new BigDecimal("90.00"), valores.getVLiq());
+    }
+
+    @Test
+    public void gRefNFSeEDocumentosVaziosNaoQuebramOXsd() throws Exception {
+        final var dps = dpsBase();
+        dps.getInfDPS().getInfoIBSCBS().setgRefNFSe(List.of("29108002259252217000131000000000000126100000000001"));
+        dps.getInfDPS().getValores().setValoresAjusteBaseCalculo(new NFSeSefinNacionalInfoAjusteBC()
+                .setvAjusteBCISSQN(new BigDecimal("10.00"))
+                .setDocumentos(List.of()));
+        final var xml = dps.toXml();
+
+        Assertions.assertFalse(xml.contains("class="), xml);
+        Assertions.assertFalse(xml.contains("<documentos"), xml);
+        Assertions.assertEquals(List.of(), errosExcetoAssinatura(xml));
     }
 
     private static NFSeSefinNacionalDPS dpsBase() {
@@ -143,7 +169,7 @@ public class NFSeSefinNacionalDPSNT009Test {
     }
 
     private static List<String> errosExcetoAssinatura(final String xml) throws Exception {
-        final var xsd = NFSeSefinNacionalDPSNT009Test.class.getClassLoader().getResource(XSD_DPS).toURI().toString();
+        final var xsd = NFSeSefinNacionalDPSNT009Test.class.getClassLoader().getResource(WSSefinNFSe.XSD_DPS).toURI().toString();
         final var erros = new NFSeXmlValidator(new StreamSource(xsd)).validateAndGetErrors(xml).getLeft();
         return erros.stream().filter(erro -> !erro.contains("Signature")).toList();
     }
