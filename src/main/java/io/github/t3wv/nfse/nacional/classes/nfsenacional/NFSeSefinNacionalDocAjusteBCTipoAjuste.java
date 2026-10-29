@@ -2,10 +2,14 @@ package io.github.t3wv.nfse.nacional.classes.nfsenacional;
 
 /**
  * Tipo de ajuste da base de cálculo por documento (TSRTCTpAjusteBC, NT SE/CGNFS-e 009).
- * Os códigos 1, 3 e 4 da NT não constam do XSD de produção restrita de 20/10/2026 e ficaram de fora.
+ * Os códigos 1, 3 e 4 estão na NT mas não no XSD de produção restrita de 20/10/2026: a SEFIN ainda
+ * os recusa numa DPS, mas ficam aqui para que uma NFS-e que os traga possa ser lida.
  */
 public enum NFSeSefinNacionalDocAjusteBCTipoAjuste {
+    ALIMENTACAO_BEBIDAS_FRIGOBAR("1", "Alimentação e bebidas/frigobar"),
     MATERIAIS("2", "Materiais"),
+    PRODUCAO_EXTERNA("3", "Produção externa"),
+    REEMBOLSO_DESPESAS("4", "Reembolso de despesas"),
     REPASSE_CONSORCIADO("5", "Repasse consorciado"),
     REPASSE_PLANO_SAUDE("6", "Repasse plano de saúde"),
     SERVICOS("7", "Serviços"),

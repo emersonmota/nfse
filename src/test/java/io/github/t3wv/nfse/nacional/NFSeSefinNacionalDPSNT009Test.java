@@ -108,6 +108,15 @@ public class NFSeSefinNacionalDPSNT009Test {
     }
 
     @Test
+    public void tipoDeAjusteDaNtForaDoXsdAtualAindaELido() throws Exception {
+        final var doc = new NFSePersister(false).read(NFSeSefinNacionalDocAjusteBC.class,
+                "<docAjusteBC><tpAjusteBC>1</tpAjusteBC><vTotDoc>10.00</vTotDoc><vAjusteAplic>10.00</vAjusteAplic>"
+                        + "<docOutro><nDoc>1</nDoc><xDoc>Doc</xDoc></docOutro></docAjusteBC>");
+
+        Assertions.assertEquals(NFSeSefinNacionalDocAjusteBCTipoAjuste.ALIMENTACAO_BEBIDAS_FRIGOBAR, doc.getTpAjusteBC());
+    }
+
+    @Test
     public void gRefNFSeEDocumentosVaziosNaoQuebramOXsd() throws Exception {
         final var dps = dpsBase();
         dps.getInfDPS().getInfoIBSCBS().setgRefNFSe(List.of("29108002259252217000131000000000000126100000000001"));

@@ -11,7 +11,8 @@ import java.util.List;
  */
 @Root(name = "imovel")
 public class NFSeSefinNacionalInfoIBSCBSInfoImovel {
-    // Obrigatório no XSD da NT 009; required = false só para ler o imovel do leiaute anterior, sem cMun
+    // Obrigatório no XSD da NT 009; required = false só para ler o imovel do leiaute anterior, sem cMun.
+    // Numa DPS nova sem ele, quem recusa é a SEFIN (a validação local em WSSefinNFSe é um assert).
     @Element(name = "cMun", required = false)
     protected String cMun;
     @Element(name = "gLocacao", required = false)

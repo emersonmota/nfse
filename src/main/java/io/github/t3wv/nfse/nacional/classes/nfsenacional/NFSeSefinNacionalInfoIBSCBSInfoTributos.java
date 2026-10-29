@@ -8,7 +8,8 @@ import org.simpleframework.xml.Element;
  */
 public class NFSeSefinNacionalInfoIBSCBSInfoTributos {
     // Obrigatórios no XSD da NT 009, mas required = false para ainda ler NFS-e anteriores, em que
-    // ficavam no gIBSCBS. A falta deles numa DPS nova é barrada pela validação contra o XSD.
+    // ficavam no gIBSCBS. Numa DPS nova sem eles, quem recusa é a SEFIN (a validação local contra o
+    // XSD em WSSefinNFSe é feita com assert e só roda com -ea).
     @Element(name = "CST", required = false)
     protected String CST;
     @Element(name = "cClassTrib", required = false)
