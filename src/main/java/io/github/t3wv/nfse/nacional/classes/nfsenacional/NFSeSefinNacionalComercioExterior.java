@@ -18,20 +18,26 @@ public class NFSeSefinNacionalComercioExterior {
     protected NFSeSefinNacionalComercioExteriorVinculoEntrePartes vinculoEntrePartes;
     @Element(name = "tpMoeda")
     protected String moeda;
-    @Element(name = "vServMoeda")
-    protected BigDecimal valorServicoMoedaEstrangeira;
+    // Release 2 da NT 009 (XSD de 24/11/2026): vServMoeda saiu; nFatura e vFatura (opcionais) entraram.
+    @Element(name = "nFatura", required = false)
+    protected String numeroFatura;
+    @Element(name = "vFatura", required = false)
+    protected BigDecimal valorFatura;
     @Element(name = "mecAFComexP")
     protected NFSeSefinNacionalComercioExteriorMecanismoApoioPrestador mecanismoApoioComercioExteriorPrestador;
     @Element(name = "mecAFComexT")
     protected NFSeSefinNacionalComercioExteriorMecanismoApoioTomador mecanismoApoioComercioExteriorTomador;
     @Element(name = "movTempBens")
     protected NFSeSefinNacionalComercioExteriorMovimentacaoTemporariaBens movimentacaoTemporariaBens;
-    @Element(name = "nDI", required = false)
-    protected String ndi;
-    @Element(name = "nRE", required = false)
-    protected String nre;
+    // Release 2 da NT 009: nDI e nRE deram lugar a nDUIMP (15 caracteres) e nDUE (14 caracteres).
+    @Element(name = "nDUIMP", required = false)
+    protected String nduimp;
+    @Element(name = "nDUE", required = false)
+    protected String ndue;
     @Element(name = "mdic")
     protected NFSeSefinNacionalComercioExteriorCompartilharComMDIC compartilharComMDIC;
+    @Element(name = "nContCambio", required = false)
+    protected String numeroContratoCambio;
 
     /**
      * @return Modo de prestação do serviço
@@ -85,19 +91,37 @@ public class NFSeSefinNacionalComercioExterior {
     }
 
     /**
-     * @return Valor do serviço na moeda estrangeira
+     * @return Número da fatura de serviços ou do documento que comprove a transação (Decreto 12.955/2026, art. 74, § 1º)
      */
-    public BigDecimal getVServMoeda() {
-        return valorServicoMoedaEstrangeira;
+    public String getNFatura() {
+        return numeroFatura;
     }
 
     /**
-     * Define o valor do serviço na moeda estrangeira
+     * Número da fatura de serviços ou do documento que comprove a transação, até 20 dígitos.
+     * Só quando exigido documento fiscal para acobertar a importação do serviço.
      *
-     * @param value Valor do serviço na moeda estrangeira
+     * @param numeroFatura número da fatura
      */
-    public NFSeSefinNacionalComercioExterior setVServMoeda(BigDecimal value) {
-        this.valorServicoMoedaEstrangeira = value;
+    public NFSeSefinNacionalComercioExterior setNFatura(String numeroFatura) {
+        this.numeroFatura = numeroFatura;
+        return this;
+    }
+
+    /**
+     * @return Valor total da fatura de serviços ou do documento que comprove a transação, na moeda de tpMoeda
+     */
+    public BigDecimal getVFatura() {
+        return valorFatura;
+    }
+
+    /**
+     * Define o valor total da fatura de serviços ou do documento que comprove a transação, na moeda de tpMoeda
+     *
+     * @param valorFatura valor da fatura na moeda estrangeira
+     */
+    public NFSeSefinNacionalComercioExterior setVFatura(BigDecimal valorFatura) {
+        this.valorFatura = valorFatura;
         return this;
     }
 
@@ -147,36 +171,38 @@ public class NFSeSefinNacionalComercioExterior {
     }
 
     /**
-     * @return Número da Declaração de Importação (DI/DSI/DA/DRI-E) averbado
+     * @return Número da Declaração Única de Importação (DUIMP)
      */
-    public String getNDI() {
-        return ndi;
+    public String getNDUIMP() {
+        return nduimp;
     }
 
     /**
-     * Define o número da Declaração de Importação (DI/DSI/DA/DRI-E) averbado
+     * Define o número da Declaração Única de Importação (DUIMP), 15 caracteres. Só para serviço
+     * relacionado à importação de um bem material.
      *
-     * @param ndi Número da declaração de importação averbado
+     * @param nduimp Número da DUIMP
      */
-    public NFSeSefinNacionalComercioExterior setNDI(String ndi) {
-        this.ndi = ndi;
+    public NFSeSefinNacionalComercioExterior setNDUIMP(String nduimp) {
+        this.nduimp = nduimp;
         return this;
     }
 
     /**
-     * @return Número do Registro de Exportação (RE) averbado
+     * @return Número da Declaração Única de Exportação (DU-E)
      */
-    public String getNRE() {
-        return nre;
+    public String getNDUE() {
+        return ndue;
     }
 
     /**
-     * Define o número do Registro de Exportação (RE) averbado
+     * Define o número da Declaração Única de Exportação (DU-E), 14 caracteres. Só para serviço
+     * relacionado à exportação de um bem material.
      *
-     * @param nre Número do registro de exportação averbado
+     * @param ndue Número da DU-E
      */
-    public NFSeSefinNacionalComercioExterior setNRE(String nre) {
-        this.nre = nre;
+    public NFSeSefinNacionalComercioExterior setNDUE(String ndue) {
+        this.ndue = ndue;
         return this;
     }
 
@@ -194,6 +220,24 @@ public class NFSeSefinNacionalComercioExterior {
      */
     public NFSeSefinNacionalComercioExterior setCompartilharComMDIC(NFSeSefinNacionalComercioExteriorCompartilharComMDIC compartilharComMDIC) {
         this.compartilharComMDIC = compartilharComMDIC;
+        return this;
+    }
+
+    /**
+     * @return Número do contrato de câmbio ou do documento que comprove o pagamento
+     */
+    public String getNContCambio() {
+        return numeroContratoCambio;
+    }
+
+    /**
+     * Define o número do contrato de câmbio ou do documento que comprove o pagamento, até 20 dígitos
+     * (Decreto 12.955/2026, art. 74, § 1º)
+     *
+     * @param numeroContratoCambio número do contrato de câmbio
+     */
+    public NFSeSefinNacionalComercioExterior setNContCambio(String numeroContratoCambio) {
+        this.numeroContratoCambio = numeroContratoCambio;
         return this;
     }
 

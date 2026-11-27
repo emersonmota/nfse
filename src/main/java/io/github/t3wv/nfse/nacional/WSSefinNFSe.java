@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class WSSefinNFSe implements NFSeLogger {
 
     /** XSD da DPS validado antes do envio: produção restrita de 20/10/2026, leiaute da NT SE/CGNFS-e 009 */
-    public static final String XSD_DPS = "NFSeNacional_nfse-esquemas_xsd-v1-01-20261020/DPS_v1.01.xsd";
+    public static final String XSD_DPS = "NFSeNacional_nfse-esquemas_xsd-v1-01-20261124/DPS_v1.01.xsd";
 
     public static final String URL_BASE_PRODUCAO = "https://sefin.nfse.gov.br/sefinnacional";
     public static final String URL_BASE_HOMOLOGACAO = "https://sefin.producaorestrita.nfse.gov.br/sefinnacional";

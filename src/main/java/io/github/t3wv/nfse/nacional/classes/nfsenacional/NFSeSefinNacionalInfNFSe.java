@@ -28,6 +28,9 @@ public class NFSeSefinNacionalInfNFSe {
     protected String versaoAplicacao;
     @Element(name = "ambGer", required = true)
     protected NFSeSefinNacionalInfNFSeAmbienteGeracao ambienteGeracao;
+    // Release 2 da NT 009: preenchido pela Sefin Nacional nas notas geradas pelos emissores nacionais.
+    @Element(name = "verCalcIBSCBS", required = false)
+    protected String versaoCalculadoraIBSCBS;
     @Element(name = "tpEmis", required = true)
     protected NFSeSefinNacionalInfNFSeTipoEmissao tipoEmissao;
     @Element(name = "procEmi", required = false)
@@ -138,6 +141,18 @@ public class NFSeSefinNacionalInfNFSe {
 
     public NFSeSefinNacionalInfNFSe setAmbienteGeracao(NFSeSefinNacionalInfNFSeAmbienteGeracao ambienteGeracao) {
         this.ambienteGeracao = ambienteGeracao;
+        return this;
+    }
+
+    /**
+     * @return Versão da calculadora de tributos (IBS/CBS) que gerou a NFS-e, quando a Sefin Nacional a informa
+     */
+    public String getVersaoCalculadoraIBSCBS() {
+        return versaoCalculadoraIBSCBS;
+    }
+
+    public NFSeSefinNacionalInfNFSe setVersaoCalculadoraIBSCBS(String versaoCalculadoraIBSCBS) {
+        this.versaoCalculadoraIBSCBS = versaoCalculadoraIBSCBS;
         return this;
     }
 

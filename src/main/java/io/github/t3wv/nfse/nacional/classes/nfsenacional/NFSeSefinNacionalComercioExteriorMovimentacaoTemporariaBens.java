@@ -5,8 +5,8 @@ public enum NFSeSefinNacionalComercioExteriorMovimentacaoTemporariaBens {
 
     DESCONHECIDO("0", "Desconhecido (tipo não informado na nota de origem)"),
     NAO("1", "Não"),
-    VINCULADA_IMPORTACAO("2", "Vinculada - Declaração de Importação"),
-    VINCULADA_EXPORTACAO("3", "Vinculada - Declaração de Exportação");
+    VINCULADA_IMPORTACAO("2", "Vinculada - Declaração Única de Importação"),
+    VINCULADA_EXPORTACAO("3", "Vinculada - Declaração Única de Exportação");
 
     private final String codigo;
     private final String descricao;

@@ -138,6 +138,24 @@ public final class NFSeSefinNacionalNFSeFixtures {
                                 <fone>1932345678</fone>
                                 <email>contas.a.pagar@tomadora.example.com</email>
                             </toma>
+                            <indDest>1</indDest>
+                            <dest>
+                                <CNPJ>12345678000195</CNPJ>
+                                <xNome>DESTINATÁRIO DA OPERAÇÃO EXEMPLO</xNome>
+                                <end>
+                                    <endExt>
+                                        <cPais>US</cPais>
+                                        <cEndPost>33101</cEndPost>
+                                        <xCidade>Miami</xCidade>
+                                        <xEstProvReg>Florida</xEstProvReg>
+                                    </endExt>
+                                    <xLgr>BISCAYNE BOULEVARD</xLgr>
+                                    <nro>200</nro>
+                                    <xBairro>DOWNTOWN</xBairro>
+                                </end>
+                                <fone>13055550100</fone>
+                                <email>destinatario@example.com</email>
+                            </dest>
                             <interm>
                                 <CPF>52998224725</CPF>
                                 <xNome>INTERMEDIÁRIO PESSOA FÍSICA</xNome>
@@ -228,24 +246,6 @@ public final class NFSeSefinNacionalNFSeFixtures {
                             <IBSCBS>
                                 <indFinal>0</indFinal>
                                 <cIndOp>100301</cIndOp>
-                                <indDest>1</indDest>
-                                <dest>
-                                    <CNPJ>12345678000195</CNPJ>
-                                    <xNome>DESTINATÁRIO DA OPERAÇÃO EXEMPLO</xNome>
-                                    <end>
-                                        <endExt>
-                                            <cPais>US</cPais>
-                                            <cEndPost>33101</cEndPost>
-                                            <xCidade>Miami</xCidade>
-                                            <xEstProvReg>Florida</xEstProvReg>
-                                        </endExt>
-                                        <xLgr>BISCAYNE BOULEVARD</xLgr>
-                                        <nro>200</nro>
-                                        <xBairro>DOWNTOWN</xBairro>
-                                    </end>
-                                    <fone>13055550100</fone>
-                                    <email>destinatario@example.com</email>
-                                </dest>
                                 <valores>
                                     <trib>
                                         <CST>200</CST>

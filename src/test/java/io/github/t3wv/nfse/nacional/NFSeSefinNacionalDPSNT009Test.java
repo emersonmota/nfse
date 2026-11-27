@@ -15,8 +15,8 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
- * DPS no leiaute da NT SE/CGNFS-e 009 (XSD de produção restrita de 20/10/2026), validada contra o XSD
- * oficial. O XML aqui não é assinado, então o único erro aceito é a falta do ds:Signature.
+ * DPS no leiaute da NT SE/CGNFS-e 009, release 2 (XSD de produção restrita de 24/11/2026), validada
+ * contra o XSD oficial. O XML aqui não é assinado, então o único erro aceito é a falta do ds:Signature.
  */
 public class NFSeSefinNacionalDPSNT009Test {
 
@@ -33,6 +33,107 @@ public class NFSeSefinNacionalDPSNT009Test {
         Assertions.assertTrue(xml.contains("<trib><CST>000</CST><cClassTrib>000001</cClassTrib></trib>"), xml);
         // xDescServ vem depois do cNBS
         Assertions.assertTrue(xml.indexOf("<cNBS>") < xml.indexOf("<xDescServ>"), xml);
+        // release 2: indDest saiu do IBSCBS e fica em infDPS, logo depois de toma
+        Assertions.assertTrue(xml.indexOf("</toma>") < xml.indexOf("<indDest>0</indDest>"), xml);
+        Assertions.assertTrue(xml.indexOf("<indDest>0</indDest>") < xml.indexOf("<serv>"), xml);
+        Assertions.assertEquals(1, xml.split("<indDest>", -1).length - 1, xml);
+    }
+
+    @Test
+    public void dpsComDestinatarioTerceiroValidaNoRelease2() throws Exception {
+        final var dps = dpsBase();
+        final var dest = new NFSeSefinNacionalInfoIBSCBSInfoDest().setCNPJ("59252217000131");
+        dest.setNome("DESTINATARIO TESTE");
+        dps.getInfDPS().setIndDest(NFSeSefinNacionalInfoIBSCBSIndDest.TERCEIRO).setDest(dest);
+        final var xml = dps.toXml();
+
+        Assertions.assertEquals(List.of(), errosExcetoAssinatura(xml));
+        Assertions.assertTrue(xml.indexOf("<indDest>1</indDest>") < xml.indexOf("<dest>"), xml);
+        Assertions.assertTrue(xml.indexOf("</dest>") < xml.indexOf("<serv>"), xml);
+        Assertions.assertTrue(xml.indexOf("</dest>") < xml.indexOf("<IBSCBS>"), xml);
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void indDestNoGrupoIBSCBSOuAusenteERecusadoPeloXsdDoRelease2() throws Exception {
+        final var semIndDest = dpsBase();
+        semIndDest.getInfDPS().setIndDest(null);
+        Assertions.assertFalse(errosExcetoAssinatura(semIndDest.toXml()).isEmpty());
+
+        final var noIbsCbs = dpsBase();
+        noIbsCbs.getInfDPS().setIndDest(null);
+        noIbsCbs.getInfDPS().getInfoIBSCBS().setIndDest(NFSeSefinNacionalInfoIBSCBSIndDest.TOMADOR);
+        Assertions.assertFalse(errosExcetoAssinatura(noIbsCbs.toXml()).isEmpty());
+    }
+
+    @Test
+    public void dpsComComercioExteriorValidaNoRelease2() throws Exception {
+        final var dps = dpsBase();
+        dps.getInfDPS().getServicoPrestado().setComercioExterior(new NFSeSefinNacionalComercioExterior()
+                .setModoPrestacao(NFSeSefinNacionalComercioExteriorModoPrestacao.CONSUMO_CONCOMITANTE)
+                .setVinculoEntrePartes(NFSeSefinNacionalComercioExteriorVinculoEntrePartes.SEM_VINCULO)
+                .setMoeda("220")
+                .setNFatura("123456")
+                .setVFatura(new BigDecimal("20.00"))
+                .setMecanismoApoioComercioExteriorPrestador(NFSeSefinNacionalComercioExteriorMecanismoApoioPrestador.values()[1])
+                .setMecanismoApoioComercioExteriorTomador(NFSeSefinNacionalComercioExteriorMecanismoApoioTomador.NENHUM)
+                .setMovimentacaoTemporariaBens(NFSeSefinNacionalComercioExteriorMovimentacaoTemporariaBens.VINCULADA_IMPORTACAO)
+                .setNDUIMP("26BR00000000011")
+                .setCompartilharComMDIC(NFSeSefinNacionalComercioExteriorCompartilharComMDIC.values()[0])
+                .setNContCambio("998877"));
+        dps.getInfDPS().getValores().setValoresAjusteBaseCalculo(new NFSeSefinNacionalInfoAjusteBC()
+                .setvAjusteBCIBSCBSComExt(new BigDecimal("-5.00")));
+        final var xml = dps.toXml();
+
+        Assertions.assertEquals(List.of(), errosExcetoAssinatura(xml));
+        Assertions.assertFalse(xml.contains("vServMoeda"), xml);
+        Assertions.assertTrue(xml.contains("<mdPrestacao>5</mdPrestacao>"), xml);
+        Assertions.assertTrue(xml.contains("<vAjusteBCIBSCBSComExt>-5.00</vAjusteBCIBSCBSComExt>"), xml);
+
+        final var lida = new NFSePersister().read(NFSeSefinNacionalDPS.class, xml);
+        final var comExt = lida.getInfDPS().getServicoPrestado().getComercioExterior();
+        Assertions.assertEquals("26BR00000000011", comExt.getNDUIMP());
+        Assertions.assertEquals(new BigDecimal("20.00"), comExt.getVFatura());
+        Assertions.assertEquals("998877", comExt.getNContCambio());
+    }
+
+    @Test
+    public void dpsDeCondominioValidaNoRelease2() throws Exception {
+        final var dps = dpsBase();
+        dps.getInfDPS().getInfoIBSCBS().setCondominios(new NFSeSefinNacionalInfoIBSCBSCondominios()
+                .setdVencOrig(LocalDate.of(2026, 12, 10))
+                .setgCobranca(List.of(new NFSeSefinNacionalInfoIBSCBSCondominioCobranca()
+                        .setTpCobranca(NFSeSefinNacionalInfoIBSCBSCondominioTipoCobranca.CONDOMINIO_ORDINARIO)
+                        .setvCobranca(new BigDecimal("100.00"))
+                        .setgDetCobranca(List.of(new NFSeSefinNacionalInfoIBSCBSCondominioDetCobranca()
+                                .setTpDetCobranca("001")
+                                .setvDetCobranca(new BigDecimal("100.00"))))))
+                .setgDesconto(List.of(new NFSeSefinNacionalInfoIBSCBSCondominioDesconto()
+                        .setTpDesconto(NFSeSefinNacionalInfoIBSCBSCondominioTipoDesconto.INCONDICIONADO)
+                        .setvDesconto(new BigDecimal("0.00"))
+                        .setxTpDesconto("Sem desconto"))));
+        final var xml = dps.toXml();
+
+        Assertions.assertEquals(List.of(), errosExcetoAssinatura(xml));
+        Assertions.assertFalse(xml.contains("class="), xml);
+        final var lida = new NFSePersister().read(NFSeSefinNacionalDPS.class, xml);
+        Assertions.assertEquals(NFSeSefinNacionalInfoIBSCBSCondominioTipoCobranca.CONDOMINIO_ORDINARIO,
+                lida.getInfDPS().getInfoIBSCBS().getCondominios().getgCobranca().get(0).getTpCobranca());
+    }
+
+    @Test
+    public void eventoComMunicipioValidaNoRelease2() throws Exception {
+        final var dps = dpsBase();
+        dps.getInfDPS().getServicoPrestado().setEvento(new NFSeSefinNacionalAtvEvento()
+                .setDescricao("Feira de teste")
+                .setDataInicio(LocalDate.of(2026, 12, 1))
+                .setDataFim(LocalDate.of(2026, 12, 2))
+                .setCodigoMunicipio("2919207")
+                .setId("EVT123"));
+        final var xml = dps.toXml();
+
+        Assertions.assertEquals(List.of(), errosExcetoAssinatura(xml));
+        Assertions.assertTrue(xml.indexOf("</dtFim>") < xml.indexOf("<cMun>2919207</cMun>"), xml);
     }
 
     @Test
@@ -74,14 +175,18 @@ public class NFSeSefinNacionalDPSNT009Test {
         Assertions.assertEquals("000", lida.getInfDPS().getInfoIBSCBS().getValores().getTrib().getCST());
         Assertions.assertEquals("000001", lida.getInfDPS().getInfoIBSCBS().getValores().getTrib().getcClassTrib());
         Assertions.assertEquals("Servico de teste", lida.getInfDPS().getServicoPrestado().getCServ().getDescricaoServico());
+        Assertions.assertEquals(NFSeSefinNacionalInfoIBSCBSIndDest.TOMADOR, lida.getInfDPS().getIndDest());
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void dpsNoLeiauteAnteriorAindaELidaSemEstrito() throws Exception {
         // Leiaute anterior à NT 009: finNFSe no IBSCBS, CST/cClassTrib no gIBSCBS, vDedRed,
         // gReeRepRes e imovel com cCIB. As NFS-e recebidas são lidas sem modo estrito
         // (NFSeSefinNacionalGetResponse, NFSeSefinNacionalNFSePostResponseSucesso).
         final var xmlAnterior = dpsBase().toXml()
+                .replace("<indDest>0</indDest>", "")
+                .replace("<cIndOp>100301</cIndOp>", "<cIndOp>100301</cIndOp><indDest>0</indDest>")
                 .replace("<finNFSe>0</finNFSe>", "")
                 .replace("<IBSCBS>", "<IBSCBS><finNFSe>0</finNFSe>")
                 .replace("<trib><CST>000</CST><cClassTrib>000001</cClassTrib></trib>",
@@ -96,6 +201,8 @@ public class NFSeSefinNacionalDPSNT009Test {
         final var lida = new NFSePersister(false).read(NFSeSefinNacionalDPS.class, xmlAnterior);
 
         Assertions.assertEquals("90010", String.valueOf(lida.getInfDPS().getNumeroDPS()));
+        // até o release 1 indDest vinha no IBSCBS
+        Assertions.assertNull(lida.getInfDPS().getIndDest());
         Assertions.assertEquals(NFSeSefinNacionalInfoIBSCBSIndDest.TOMADOR, lida.getInfDPS().getInfoIBSCBS().getIndDest());
     }
 
@@ -152,6 +259,7 @@ public class NFSeSefinNacionalDPSNT009Test {
                 .setCodigoMunicipioEmissao("2910800")
                 .setPrestador(prestador)
                 .setTomador(tomador)
+                .setIndDest(NFSeSefinNacionalInfoIBSCBSIndDest.TOMADOR)
                 .setServicoPrestado(new NFSeSefinNacionalServ()
                         .setLocalPrestacao(new NFSeSefinNacionalLocPrest().setCodigoMunicipio("2910800"))
                         .setCServ(new NFSeSefinNacionalCServ()
@@ -168,7 +276,6 @@ public class NFSeSefinNacionalDPSNT009Test {
                 .setInfoIBSCBS(new NFSeSefinNacionalInfoIBSCBS()
                         .setIndFinal(false)
                         .setcIndOp("100301")
-                        .setIndDest(NFSeSefinNacionalInfoIBSCBSIndDest.TOMADOR)
                         .setValores(new NFSeSefinNacionalInfoIBSCBSInfoValoresIBSCBS()
                                 .setTrib(new NFSeSefinNacionalInfoIBSCBSInfoTributos()
                                         .setCST("000")

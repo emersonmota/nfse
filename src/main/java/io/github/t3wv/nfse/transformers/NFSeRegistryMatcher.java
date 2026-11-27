@@ -71,6 +71,8 @@ public class NFSeRegistryMatcher extends RegistryMatcher {
         super.bind(NFSeSefinNacionalInfoIBSCBSTpOper.class, new NFSeSefinNacionalInfoIBSCBSTpOperTransformer());
         super.bind(NFSeSefinNacionalInfoIBSCBSTpEnteGov.class, new NFSeSefinNacionalInfoIBSCBSTpEnteGovTransformer());
         super.bind(NFSeSefinNacionalInfoIBSCBSIndDest.class, new NFSeSefinNacionalInfoIBSCBSIndDestTransformer());
+        super.bind(NFSeSefinNacionalInfoIBSCBSCondominioTipoCobranca.class, new NFSeSefinNacionalInfoIBSCBSCondominioTipoCobrancaTransformer());
+        super.bind(NFSeSefinNacionalInfoIBSCBSCondominioTipoDesconto.class, new NFSeSefinNacionalInfoIBSCBSCondominioTipoDescontoTransformer());
         super.bind(NFSeSefinNacionalInfoIBSCBSTipoChaveDFe.class, new NFSeSefinNacionalInfoIBSCBSTipoChaveDFeTransformer());
 
         // NFSe São Paulo

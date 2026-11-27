@@ -6,8 +6,11 @@ public enum NFSeSefinNacionalComercioExteriorModoPrestacao {
     DESCONHECIDO("0", "Desconhecido (tipo não informado na nota de origem)"),
     TRANSFRONTEIRICO("1", "Transfronteiriço"),
     CONSUMO("2", "Consumo no Brasil"),
-    PRESENCA("3", "Presença Comercial no Exterior"),
-    MOVIMENTO("4", "Movimento Temporário de Pessoas Físicas");
+    // Release 2 da NT 009 (XSD de 24/11/2026): o 3 deixou de ser Presença Comercial no Exterior e o
+    // 4 deixou de ser Movimento Temporário de Pessoas Físicas.
+    MOVIMENTO("3", "Movimento Temporário de Pessoas Físicas"),
+    CONSUMO_EXTERIOR("4", "Consumo no Exterior"),
+    CONSUMO_CONCOMITANTE("5", "Consumo concomitante no território nacional e exterior");
 
     private final String codigo;
     private final String descricao;
