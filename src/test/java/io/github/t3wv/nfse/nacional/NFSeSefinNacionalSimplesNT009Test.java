@@ -66,6 +66,18 @@ public class NFSeSefinNacionalSimplesNT009Test {
     }
 
     @Test
+    public void optantePendenteAindaNaoPassaNoXsdAtual() throws Exception {
+        final var dps = dpsSimples();
+        dps.getInfDPS().getPrestador().getRegimeTributario()
+                .setOpSimplesNacional(NFSeSefinNacionalRegimeTributarioSituacaoSimplesNacional.OPTANTE_PENDENTE);
+
+        final var erros = errosExcetoAssinatura(dps.toXml());
+
+        Assertions.assertFalse(erros.isEmpty());
+        Assertions.assertTrue(erros.stream().allMatch(e -> e.contains("'4'")), String.join("\n", erros));
+    }
+
+    @Test
     public void camposDoSimplesFazemIdaEVoltaPeloXml() throws Exception {
         final var dps = dpsSimples();
         dps.getInfDPS().getPrestador().getRegimeTributario()

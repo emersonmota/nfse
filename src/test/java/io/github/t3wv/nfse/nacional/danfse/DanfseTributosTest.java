@@ -1,5 +1,9 @@
 package io.github.t3wv.nfse.nacional.danfse;
 
+import io.github.t3wv.nfse.nacional.classes.nfsenacional.NFSeSefinNacionalInfNFSeIBSCBSTotais;
+import io.github.t3wv.nfse.nacional.classes.nfsenacional.NFSeSefinNacionalInfNFSeIBSCBSTotaisCBS;
+import io.github.t3wv.nfse.nacional.classes.nfsenacional.NFSeSefinNacionalInfNFSeIBSCBSTotaisIBS;
+import io.github.t3wv.nfse.nacional.classes.nfsenacional.NFSeSefinNacionalInfNFSeIBSCBSTotaisTribSN;
 import io.github.t3wv.nfse.nacional.classes.nfsenacional.NFSeSefinNacionalTribOutrosPisCofinsTipoRetencao;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -89,5 +93,24 @@ class DanfseTributosTest {
     void deveIdentificarOperacaoNaoSujeitaAoIssqn() {
         Assertions.assertFalse(DanfseTributos.naoSujeitaAoIssqn(DanfseFixtures.nota(DanfseFixtures.COMPLETA)));
         Assertions.assertTrue(DanfseTributos.naoSujeitaAoIssqn(DanfseFixtures.nota(DanfseFixtures.MINIMA)));
+    }
+
+    @Test
+    void deveUsarOGTribSNQuandoOSimplesNaoTrazVIBSTotNemVCBS() {
+        final var totais = new NFSeSefinNacionalInfNFSeIBSCBSTotais()
+                .setgIBS(new NFSeSefinNacionalInfNFSeIBSCBSTotaisIBS())
+                .setgCBS(new NFSeSefinNacionalInfNFSeIBSCBSTotaisCBS())
+                .setgTribSN(new NFSeSefinNacionalInfNFSeIBSCBSTotaisTribSN()
+                        .setvIBSSN(new BigDecimal("0.10")).setvCBSSN(new BigDecimal("0.90")));
+        Assertions.assertEquals(new BigDecimal("0.10"), DanfseTributos.valorIbs(totais));
+        Assertions.assertEquals(new BigDecimal("0.90"), DanfseTributos.valorCbs(totais));
+
+        totais.getgIBS().setvIBSTot(new BigDecimal("5.00"));
+        totais.getgCBS().setvCBS(new BigDecimal("9.00"));
+        Assertions.assertEquals(new BigDecimal("5.00"), DanfseTributos.valorIbs(totais));
+        Assertions.assertEquals(new BigDecimal("9.00"), DanfseTributos.valorCbs(totais));
+
+        Assertions.assertNull(DanfseTributos.valorIbs(new NFSeSefinNacionalInfNFSeIBSCBSTotais()));
+        Assertions.assertNull(DanfseTributos.valorCbs(null));
     }
 }

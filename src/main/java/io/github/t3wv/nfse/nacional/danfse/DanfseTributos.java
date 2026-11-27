@@ -1,5 +1,6 @@
 package io.github.t3wv.nfse.nacional.danfse;
 
+import io.github.t3wv.nfse.nacional.classes.nfsenacional.NFSeSefinNacionalInfNFSeIBSCBSTotais;
 import io.github.t3wv.nfse.nacional.classes.nfsenacional.NFSeSefinNacionalRegimeTributarioRegimeEspecialTributacao;
 import io.github.t3wv.nfse.nacional.classes.nfsenacional.NFSeSefinNacionalTribMunicipalTributacaoISSQN;
 
@@ -309,11 +310,39 @@ final class DanfseTributos {
         canvas.campo(3, 1, "Valor Apurado Estadual - IBS", DanfseFormatador.valor(ibs == null || ibs.getgIBSUFTot() == null ? null : ibs.getgIBSUFTot().getvIBSUF()));
         canvas.avancar(LINHA);
 
-        canvas.campo(0, 1, "Valor Total Apurado - IBS", DanfseFormatador.valor(ibs == null ? null : ibs.getvIBSTot()));
+        canvas.campo(0, 1, "Valor Total Apurado - IBS", DanfseFormatador.valor(valorIbs(totais)));
         canvas.campo(1, 1, "Alíquota - CBS", DanfseFormatador.percentual(fed == null ? null : fed.getpCBS()));
         canvas.campo(2, 1, "Alíquota Efetiva - CBS", DanfseFormatador.percentual(fed == null ? null : fed.getpAliqEfetCBS()));
-        canvas.campo(3, 1, "Valor Total Apurado - CBS", DanfseFormatador.valor(cbs == null ? null : cbs.getvCBS()));
+        canvas.campo(3, 1, "Valor Total Apurado - CBS", DanfseFormatador.valor(valorCbs(totais)));
         canvas.avancar(LINHA);
+    }
+
+    /**
+     * Valor do IBS: vIBSTot do gIBS ou, para optante do Simples Nacional que não recebe vIBSTot, o vIBSSN do
+     * gTribSN (NT SE/CGNFS-e 009, item 2.4).
+     */
+    static BigDecimal valorIbs(final NFSeSefinNacionalInfNFSeIBSCBSTotais totais) {
+        if (totais == null) {
+            return null;
+        }
+        if (totais.getgIBS() != null && totais.getgIBS().getvIBSTot() != null) {
+            return totais.getgIBS().getvIBSTot();
+        }
+        return totais.getgTribSN() == null ? null : totais.getgTribSN().getvIBSSN();
+    }
+
+    /**
+     * Valor da CBS: vCBS do gCBS ou, para optante do Simples Nacional que não recebe vCBS, o vCBSSN do
+     * gTribSN (NT SE/CGNFS-e 009, item 2.4).
+     */
+    static BigDecimal valorCbs(final NFSeSefinNacionalInfNFSeIBSCBSTotais totais) {
+        if (totais == null) {
+            return null;
+        }
+        if (totais.getgCBS() != null && totais.getgCBS().getvCBS() != null) {
+            return totais.getgCBS().getvCBS();
+        }
+        return totais.getgTribSN() == null ? null : totais.getgTribSN().getvCBSSN();
     }
 
     /**
@@ -355,8 +384,8 @@ final class DanfseTributos {
         final var valoresDps = nota.dps().getValores();
         final var servico = valoresDps == null ? null : valoresDps.getValoresServicoPrestado();
         final var totais = nota.ibsCbsNota() == null ? null : nota.ibsCbsNota().getTotCIBS();
-        final var ibs = totais == null || totais.getgIBS() == null ? null : totais.getgIBS().getvIBSTot();
-        final var cbs = totais == null || totais.getgCBS() == null ? null : totais.getgCBS().getvCBS();
+        final var ibs = valorIbs(totais);
+        final var cbs = valorCbs(totais);
 
         canvas.divisoria();
         canvas.tituloBloco("VALOR TOTAL DA NFS-e");
