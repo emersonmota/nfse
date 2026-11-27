@@ -8,7 +8,9 @@ public enum NFSeSefinNacionalRegimeTributarioSituacaoSimplesNacional {
 
     NAO_OPTANTE("1", "Não Optante"),
     MEI("2", "Optante - Microempreendedor Individual (MEI)"),
-    ME_EPP("3", "Optante - Microempresa ou Empresa de Pequeno Porte (ME/EPP)");
+    ME_EPP("3", "Optante - Microempresa ou Empresa de Pequeno Porte (ME/EPP)"),
+    /** Opção pelo Simples Nacional pendente de regularização/julgamento (NT SE/CGNFS-e 009, item 2.4). */
+    OPTANTE_PENDENTE("4", "Optante Pendente");
 
     private final String codigo;
     private final String descricao;

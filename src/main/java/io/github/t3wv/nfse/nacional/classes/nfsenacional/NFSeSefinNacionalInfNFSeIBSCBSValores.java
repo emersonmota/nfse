@@ -14,6 +14,9 @@ public class NFSeSefinNacionalInfNFSeIBSCBSValores {
     @Element(name = "vCalcAjusteBCIBSCBS", required = false)
     private BigDecimal vCalcAjusteBCIBSCBS;
 
+    @Element(name = "vReceitaBrutaSN", required = false)
+    private BigDecimal vReceitaBrutaSN;
+
     @Element(name = "uf")
     private NFSeSefinNacionalInfNFSeIBSCBSValoresUF uf;
 
@@ -80,6 +83,18 @@ public class NFSeSefinNacionalInfNFSeIBSCBSValores {
 
     public NFSeSefinNacionalInfNFSeIBSCBSValores setFed(NFSeSefinNacionalInfNFSeIBSCBSValoresFed fed) {
         this.fed = fed;
+        return this;
+    }
+
+    /**
+     * @return Valor da receita bruta para os optantes do Simples Nacional (vReceitaBrutaSN, NT SE/CGNFS-e 009, item 2.4)
+     */
+    public BigDecimal getvReceitaBrutaSN() {
+        return vReceitaBrutaSN;
+    }
+
+    public NFSeSefinNacionalInfNFSeIBSCBSValores setvReceitaBrutaSN(BigDecimal vReceitaBrutaSN) {
+        this.vReceitaBrutaSN = vReceitaBrutaSN;
         return this;
     }
 }

@@ -9,7 +9,7 @@ public class NFSeSefinNacionalInfNFSeIBSCBSTotaisCBS {
     private NFSeSefinNacionalInfNFSeIBSCBSTotaisCBSCredPres gCBSCredPres;
     @Element(name = "vDifCBS", required = false)
     private BigDecimal vDifCBS;
-    @Element(name = "vCBS")
+    @Element(name = "vCBS", required = false)
     private BigDecimal vCBS;
 
     public NFSeSefinNacionalInfNFSeIBSCBSTotaisCBSCredPres getgCBSCredPres() {

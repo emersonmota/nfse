@@ -11,6 +11,8 @@ public class NFSeSefinNacionalInfNFSeIBSCBSTotais {
     private NFSeSefinNacionalInfNFSeIBSCBSTotaisIBS gIBS;
     @Element( name="gCBS", required = false)
     private NFSeSefinNacionalInfNFSeIBSCBSTotaisCBS gCBS;
+    @Element( name="gTribSN", required = false)
+    private NFSeSefinNacionalInfNFSeIBSCBSTotaisTribSN gTribSN;
     @Element( name="gTribRegular", required = false)
     private NFSeSefinNacionalInfNFSeIBSCBSTotaisTribRegular gTribRegular;
     @Element( name="gTribCompraGov", required = false)
@@ -58,6 +60,18 @@ public class NFSeSefinNacionalInfNFSeIBSCBSTotais {
 
     public NFSeSefinNacionalInfNFSeIBSCBSTotais setgTribCompraGov(NFSeSefinNacionalInfNFSeIBSCBSTotaisTribCompraGov gTribCompraGov) {
         this.gTribCompraGov = gTribCompraGov;
+        return this;
+    }
+
+    /**
+     * @return Composição do IBS e da CBS para optantes do Simples Nacional (gTribSN, NT SE/CGNFS-e 009, item 2.4)
+     */
+    public NFSeSefinNacionalInfNFSeIBSCBSTotaisTribSN getgTribSN() {
+        return gTribSN;
+    }
+
+    public NFSeSefinNacionalInfNFSeIBSCBSTotais setgTribSN(NFSeSefinNacionalInfNFSeIBSCBSTotaisTribSN gTribSN) {
+        this.gTribSN = gTribSN;
         return this;
     }
 }

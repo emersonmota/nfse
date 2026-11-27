@@ -14,6 +14,8 @@ public class NFSeSefinNacionalRegTrib {
     protected NFSeSefinNacionalRegimeTributarioSituacaoSimplesNacional opSimplesNacional;
     @Element(name = "regApTribSN", required = false)
     protected NFSeSefinNacionalRegimeTributarioApuracaoAposLimiteSimples regimeApuracaoAposLimiteSimplesNacional;
+    @Element(name = "regApIBSCBSSN", required = false)
+    protected NFSeSefinNacionalRegimeTributarioApuracaoIBSCBSSimples regimeApuracaoIBSCBSSimplesNacional;
     @Element(name = "regEspTrib")
     protected NFSeSefinNacionalRegimeTributarioRegimeEspecialTributacao regimeEspecialTributacao;
 
@@ -44,6 +46,24 @@ public class NFSeSefinNacionalRegTrib {
      */
     public NFSeSefinNacionalRegTrib setRegimeApuracaoAposLimiteSimplesNacional(NFSeSefinNacionalRegimeTributarioApuracaoAposLimiteSimples regimeApuracaoAposLimiteSimplesNacional) {
         this.regimeApuracaoAposLimiteSimplesNacional = regimeApuracaoAposLimiteSimplesNacional;
+        return this;
+    }
+
+    /**
+     * @return Regime de apuração do IBS e da CBS para optante (ou pendente) do Simples Nacional
+     */
+    public NFSeSefinNacionalRegimeTributarioApuracaoIBSCBSSimples getRegimeApuracaoIBSCBSSimplesNacional() {
+        return regimeApuracaoIBSCBSSimplesNacional;
+    }
+
+    /**
+     * Regime de apuração do IBS e da CBS (regApIBSCBSSN, NT SE/CGNFS-e 009, item 2.4), para prestador optante
+     * pelo Simples Nacional ou com opção pendente. Fica fora do XSD de produção restrita de 20/10/2026.
+     *
+     * @param regimeApuracaoIBSCBSSimplesNacional Regime de apuração do IBS e da CBS pelo Simples Nacional
+     */
+    public NFSeSefinNacionalRegTrib setRegimeApuracaoIBSCBSSimplesNacional(NFSeSefinNacionalRegimeTributarioApuracaoIBSCBSSimples regimeApuracaoIBSCBSSimplesNacional) {
+        this.regimeApuracaoIBSCBSSimplesNacional = regimeApuracaoIBSCBSSimplesNacional;
         return this;
     }
 
