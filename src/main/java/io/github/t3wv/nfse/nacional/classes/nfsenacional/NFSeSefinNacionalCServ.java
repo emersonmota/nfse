@@ -111,7 +111,7 @@ public class NFSeSefinNacionalCServ {
 
     /**
      * Código da atividade do Simples Nacional (cAtvSN, NT SE/CGNFS-e 009, item 2.4), para prestador optante
-     * pelo Simples Nacional ou com opção pendente. Fica fora do XSD de produção restrita de 20/10/2026.
+     * pelo Simples Nacional ou com opção pendente. Fica fora dos XSD de produção restrita até o de 24/11/2026: só vale a partir do release 4 da plataforma.
      *
      * @param codigoAtividadeSimplesNacional Código da atividade do Simples Nacional
      */

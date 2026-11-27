@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Campos do Simples Nacional da NT SE/CGNFS-e 009 v1.01, item 2.4 (release 4 da plataforma, produção em 24/12/2026).
  * <p>
- * O XSD de produção restrita de 20/10/2026 ainda não tem esses campos. A posição de cada um segue a NT
+ * Os XSD de produção restrita de 20/10/2026 e de 24/11/2026 (release 2) ainda não têm esses campos. A posição de cada um segue a NT
  * (regApIBSCBSSN em prest/regTrib, cAtvSN em serv/cServ) e deve ser conferida quando o XSD do release 4 sair.
  */
 public class NFSeSefinNacionalSimplesNT009Test {
@@ -154,6 +154,7 @@ public class NFSeSefinNacionalSimplesNT009Test {
                 .setCodigoMunicipioEmissao("2910800")
                 .setPrestador(prestador)
                 .setTomador(tomador)
+                .setIndDest(NFSeSefinNacionalInfoIBSCBSIndDest.TOMADOR)
                 .setServicoPrestado(new NFSeSefinNacionalServ()
                         .setLocalPrestacao(new NFSeSefinNacionalLocPrest().setCodigoMunicipio("2910800"))
                         .setCServ(new NFSeSefinNacionalCServ()
@@ -170,7 +171,6 @@ public class NFSeSefinNacionalSimplesNT009Test {
                 .setInfoIBSCBS(new NFSeSefinNacionalInfoIBSCBS()
                         .setIndFinal(false)
                         .setcIndOp("100301")
-                        .setIndDest(NFSeSefinNacionalInfoIBSCBSIndDest.TOMADOR)
                         .setValores(new NFSeSefinNacionalInfoIBSCBSInfoValoresIBSCBS()
                                 .setTrib(new NFSeSefinNacionalInfoIBSCBSInfoTributos()
                                         .setCST("000")
