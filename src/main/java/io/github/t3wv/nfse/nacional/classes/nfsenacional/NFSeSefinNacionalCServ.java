@@ -12,6 +12,8 @@ public class NFSeSefinNacionalCServ {
     protected String codigoMunicipalTributacaoISSQN;
     @Element(name = "cNBS", required = false)
     protected String codigoNBS;
+    @Element(name = "cAtvSN", required = false)
+    protected NFSeSefinNacionalCServAtividadeSimplesNacional codigoAtividadeSimplesNacional;
     @Element(name = "cIntContrib", required = false)
     protected String codigoInternoContribuinte;
     @Element(name = "xDescServ")
@@ -99,4 +101,22 @@ public class NFSeSefinNacionalCServ {
         return this;
     }
 
+
+    /**
+     * @return Código da atividade do Simples Nacional
+     */
+    public NFSeSefinNacionalCServAtividadeSimplesNacional getCodigoAtividadeSimplesNacional() {
+        return codigoAtividadeSimplesNacional;
+    }
+
+    /**
+     * Código da atividade do Simples Nacional (cAtvSN, NT SE/CGNFS-e 009, item 2.4), para prestador optante
+     * pelo Simples Nacional ou com opção pendente. Fica fora dos XSD de produção restrita até o de 24/11/2026: só vale a partir do release 4 da plataforma.
+     *
+     * @param codigoAtividadeSimplesNacional Código da atividade do Simples Nacional
+     */
+    public NFSeSefinNacionalCServ setCodigoAtividadeSimplesNacional(NFSeSefinNacionalCServAtividadeSimplesNacional codigoAtividadeSimplesNacional) {
+        this.codigoAtividadeSimplesNacional = codigoAtividadeSimplesNacional;
+        return this;
+    }
 }
