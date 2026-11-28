@@ -41,6 +41,14 @@ public class NFSeSefinNacionalInfDPS {
     protected NFSeSefinNacionalInfoPrestador prestador;
     @Element(name = "toma", required = false)
     protected NFSeSefinNacionalInfoPessoa tomador;
+    // Release 2 da NT 009 (XSD de produção restrita de 24/11/2026): indDest e dest saíram do grupo
+    // IBSCBS para cá, logo depois de toma. O XSD exige indDest em toda DPS; required = false aqui só
+    // para ler DPS anteriores, que o trazem dentro do IBSCBS. Sem valor padrão de propósito: a
+    // validação contra o XSD recusa a DPS que não o informar.
+    @Element(name = "indDest", required = false)
+    protected NFSeSefinNacionalInfoIBSCBSIndDest indDest;
+    @Element(name = "dest", required = false)
+    protected NFSeSefinNacionalInfoIBSCBSInfoDest dest;
     @Element(name = "interm", required = false)
     protected NFSeSefinNacionalInfoPessoa intermediario;
     @Element(name = "serv")
@@ -275,6 +283,45 @@ public class NFSeSefinNacionalInfDPS {
      */
     public NFSeSefinNacionalInfDPS setTomador(NFSeSefinNacionalInfoPessoa tomador) {
         this.tomador = tomador;
+        return this;
+    }
+
+    /**
+     * A respeito do Destinatário dos serviços (obrigatório em toda DPS desde o release 2 da NT 009).
+     *
+     * @return indDest
+     */
+    public NFSeSefinNacionalInfoIBSCBSIndDest getIndDest() {
+        return indDest;
+    }
+
+    /**
+     * A respeito do Destinatário dos serviços (obrigatório em toda DPS desde o release 2 da NT 009).
+     *
+     * @param indDest indicador do destinatário
+     * @see NFSeSefinNacionalInfoIBSCBSIndDest
+     */
+    public NFSeSefinNacionalInfDPS setIndDest(NFSeSefinNacionalInfoIBSCBSIndDest indDest) {
+        this.indDest = indDest;
+        return this;
+    }
+
+    /**
+     * Grupo de informações relativas ao Destinatário, quando ele não é o próprio tomador.
+     *
+     * @return dest
+     */
+    public NFSeSefinNacionalInfoIBSCBSInfoDest getDest() {
+        return dest;
+    }
+
+    /**
+     * Grupo de informações relativas ao Destinatário, quando ele não é o próprio tomador.
+     *
+     * @param dest destinatário
+     */
+    public NFSeSefinNacionalInfDPS setDest(NFSeSefinNacionalInfoIBSCBSInfoDest dest) {
+        this.dest = dest;
         return this;
     }
 

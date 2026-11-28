@@ -87,13 +87,17 @@ final class DanfseParticipantes {
         linhasDoParticipante(canvas, "TOMADOR / ADQUIRENTE", pessoa(nota, tomador, NFSeSefinNacionalInfDPSTipoEmitente.TOMADOR), true);
     }
 
+    @SuppressWarnings("deprecation")
     private static void destinatario(final DanfseCanvas canvas, final DanfseNota nota) {
+        // Desde o release 2 da NT 009 indDest e dest ficam em infDPS; NFS-e anteriores os trazem no IBSCBS.
+        final var dps = nota.dps();
         final var ibsCbs = nota.ibsCbsDps();
-        if (ibsCbs != null && ibsCbs.getIndDest() == NFSeSefinNacionalInfoIBSCBSIndDest.TOMADOR) {
+        final var indDest = dps.getIndDest() != null ? dps.getIndDest() : ibsCbs == null ? null : ibsCbs.getIndDest();
+        if (indDest == NFSeSefinNacionalInfoIBSCBSIndDest.TOMADOR) {
             suprimir(canvas, DESTINATARIO_E_O_TOMADOR);
             return;
         }
-        final var dest = ibsCbs == null ? null : ibsCbs.getDest();
+        final var dest = dps.getDest() != null ? dps.getDest() : ibsCbs == null ? null : ibsCbs.getDest();
         if (dest == null) {
             suprimir(canvas, DESTINATARIO_NAO_IDENTIFICADO);
             return;

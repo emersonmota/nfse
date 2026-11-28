@@ -19,6 +19,8 @@ public class NFSeSefinNacionalAtvEvento {
     protected LocalDate dataInicio;
     @Element(name = "dtFim")
     protected LocalDate dataFim;
+    @Element(name = "cMun", required = false)
+    protected String codigoMunicipio;
     @Element(name = "idAtvEvt", required = false)
     protected String id;
     @Element(name = "end", required = false)
@@ -72,6 +74,24 @@ public class NFSeSefinNacionalAtvEvento {
      */
     public NFSeSefinNacionalAtvEvento setDataFim(LocalDate dataFim) {
         this.dataFim = dataFim;
+        return this;
+    }
+
+    /**
+     * @return Código IBGE do município do local do evento, ou null quando é o próprio local da prestação
+     */
+    public String getCodigoMunicipio() {
+        return codigoMunicipio;
+    }
+
+    /**
+     * Código IBGE do município do local do evento (release 2 da NT 009). Só para os subitens 12.13 e
+     * 17.10 quando o evento acontece em local diverso do local da prestação; nos demais casos não informe.
+     *
+     * @param codigoMunicipio Código IBGE do município do evento
+     */
+    public NFSeSefinNacionalAtvEvento setCodigoMunicipio(String codigoMunicipio) {
+        this.codigoMunicipio = codigoMunicipio;
         return this;
     }
 

@@ -22,6 +22,8 @@ public class NFSeSefinNacionalInfoAjusteBC {
     // elemento documentos, e o XSD o recusa.
     @ElementList(name = "documentos", entry = "docAjusteBC", required = false)
     protected ArrayList<NFSeSefinNacionalDocAjusteBC> documentos;
+    @Element(name = "vAjusteBCIBSCBSComExt", required = false)
+    protected BigDecimal vAjusteBCIBSCBSComExt;
 
     /**
      * Percentual padrão para ajuste da base de cálculo do ISSQN
@@ -70,5 +72,19 @@ public class NFSeSefinNacionalInfoAjusteBC {
                 ", vAjusteBCISSQN=" + vAjusteBCISSQN +
                 ", documentos=" + documentos +
                 '}';
+    }
+
+    /**
+     * Valor para ajuste da base de cálculo do IBS/CBS nos casos de comércio exterior (release 2 da
+     * NT 009). Pode ser negativo; entra somado na vBC do IBS/CBS.
+     * @return vAjusteBCIBSCBSComExt
+     */
+    public BigDecimal getvAjusteBCIBSCBSComExt() {
+        return vAjusteBCIBSCBSComExt;
+    }
+
+    public NFSeSefinNacionalInfoAjusteBC setvAjusteBCIBSCBSComExt(BigDecimal vAjusteBCIBSCBSComExt) {
+        this.vAjusteBCIBSCBSComExt = vAjusteBCIBSCBSComExt;
+        return this;
     }
 }

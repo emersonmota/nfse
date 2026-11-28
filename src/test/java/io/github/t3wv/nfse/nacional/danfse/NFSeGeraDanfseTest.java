@@ -240,8 +240,22 @@ class NFSeGeraDanfseTest {
     }
 
     @Test
-    void deveInformarQueODestinatarioEOProprioTomador() {
+    void deveInformarQueODestinatarioEOProprioTomadorNoRelease2() {
+        // release 2 da NT 009: indDest em infDPS, sem nada no IBSCBS
         final var nfse = DanfseFixtures.nfse(DanfseFixtures.COMPLETA);
+        final var infDps = nfse.getInfNFSe().getDPS().getInfDPS();
+        infDps.setIndDest(NFSeSefinNacionalInfoIBSCBSIndDest.TOMADOR).setDest(null);
+        final var texto = DanfseFixtures.texto(gerador.gerar(nfse));
+        Assertions.assertTrue(texto.contains(DanfseParticipantes.DESTINATARIO_E_O_TOMADOR));
+        Assertions.assertFalse(texto.contains("Miami"));
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    void deveInformarQueODestinatarioEOProprioTomadorNoLeiauteAnterior() {
+        // até o release 1 da NT 009 indDest e dest vinham no IBSCBS
+        final var nfse = DanfseFixtures.nfse(DanfseFixtures.COMPLETA);
+        nfse.getInfNFSe().getDPS().getInfDPS().setIndDest(null).setDest(null);
         nfse.getInfNFSe().getDPS().getInfDPS().getInfoIBSCBS().setIndDest(NFSeSefinNacionalInfoIBSCBSIndDest.TOMADOR).setDest(null);
         final var texto = DanfseFixtures.texto(gerador.gerar(nfse));
         Assertions.assertTrue(texto.contains(DanfseParticipantes.DESTINATARIO_E_O_TOMADOR));

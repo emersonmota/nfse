@@ -20,14 +20,21 @@ public class NFSeSefinNacionalInfoIBSCBS {
     protected ArrayList<String> gRefNFSe;
     @Element(name="tpEnteGov", required = false)
     protected NFSeSefinNacionalInfoIBSCBSTpEnteGov tpEnteGov;
-    @Element(name="indDest")
+    // Até o release 1 da NT 009 indDest e dest ficavam aqui; desde o release 2 (XSD de 24/11/2026)
+    // ficam em infDPS. Os campos ficam só para ler NFS-e anteriores: o XSD atual recusa a DPS que os
+    // trouxer neste grupo.
+    @Deprecated
+    @Element(name="indDest", required = false)
     protected NFSeSefinNacionalInfoIBSCBSIndDest indDest;
+    @Deprecated
     @Element(name="dest", required = false)
     protected NFSeSefinNacionalInfoIBSCBSInfoDest dest;
     @Element(name="imovel", required = false)
     protected NFSeSefinNacionalInfoIBSCBSInfoImovel imovel;
     @ElementList(name="bensMoveis", entry = "bensMoveis", inline = true, required = false)
     protected List<NFSeSefinNacionalInfoIBSCBSBensMoveis> bensMoveis;
+    @Element(name="condominios", required = false)
+    protected NFSeSefinNacionalInfoIBSCBSCondominios condominios;
     @Element(name="valores")
     protected NFSeSefinNacionalInfoIBSCBSInfoValoresIBSCBS valores;
 
@@ -130,6 +137,7 @@ public class NFSeSefinNacionalInfoIBSCBS {
      * A respeito do Destinatário dos serviços
      * @return indDest
      */
+    @Deprecated
     public NFSeSefinNacionalInfoIBSCBSIndDest getIndDest() {
         return indDest;
     }
@@ -140,6 +148,7 @@ public class NFSeSefinNacionalInfoIBSCBS {
      * @param indDest
      * @return NFSeSefinNacionalInfoIBSCBS
      */
+    @Deprecated
     public NFSeSefinNacionalInfoIBSCBS setIndDest(NFSeSefinNacionalInfoIBSCBSIndDest indDest) {
         this.indDest = indDest;
         return this;
@@ -149,6 +158,7 @@ public class NFSeSefinNacionalInfoIBSCBS {
      * Dados do destinatário dos serviços
      * @return dest
      */
+    @Deprecated
     public NFSeSefinNacionalInfoIBSCBSInfoDest getDest() {
         return dest;
     }
@@ -158,6 +168,7 @@ public class NFSeSefinNacionalInfoIBSCBS {
      * @param dest
      * @return NFSeSefinNacionalInfoIBSCBS
      */
+    @Deprecated
     public NFSeSefinNacionalInfoIBSCBS setDest(NFSeSefinNacionalInfoIBSCBSInfoDest dest) {
         this.dest = dest;
         return this;
@@ -196,6 +207,19 @@ public class NFSeSefinNacionalInfoIBSCBS {
      */
     public NFSeSefinNacionalInfoIBSCBS setBensMoveis(List<NFSeSefinNacionalInfoIBSCBSBensMoveis> bensMoveis) {
         this.bensMoveis = bensMoveis;
+        return this;
+    }
+
+    /**
+     * Grupo de informações das operações de condomínios (só para o subitem 99.05 do cTribNac)
+     * @return condominios
+     */
+    public NFSeSefinNacionalInfoIBSCBSCondominios getCondominios() {
+        return condominios;
+    }
+
+    public NFSeSefinNacionalInfoIBSCBS setCondominios(NFSeSefinNacionalInfoIBSCBSCondominios condominios) {
+        this.condominios = condominios;
         return this;
     }
 
