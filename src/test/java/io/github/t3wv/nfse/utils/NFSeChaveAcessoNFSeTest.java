@@ -43,6 +43,12 @@ public class NFSeChaveAcessoNFSeTest {
     }
 
     @Test
+    public void naoConferePosicaoDasLetras() {
+        //o leiaute da chave do release 3 não saiu: letra em qualquer posição passa, e quem decide é a SEFIN
+        Assertions.assertEquals("O" + CHAVE_NUMERICA.substring(1), NFSeUtils.normalizarChaveAcessoNFSe("o" + CHAVE_NUMERICA.substring(1)));
+    }
+
+    @Test
     public void naoTiraLetrasDaChave() {
         //antes a normalização tirava tudo que não era dígito: a chave com letras virava 46 dígitos
         Assertions.assertEquals(50, NFSeUtils.normalizarChaveAcessoNFSe(CHAVE_RELEASE_3).length());
@@ -56,14 +62,6 @@ public class NFSeChaveAcessoNFSeTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> NFSeUtils.normalizarChaveAcessoNFSe(CHAVE_NUMERICA + "1"));
         Assertions.assertThrows(IllegalArgumentException.class, () -> NFSeUtils.normalizarChaveAcessoNFSe("ABC" + CHAVE_NUMERICA));
         Assertions.assertThrows(IllegalArgumentException.class, () -> NFSeUtils.normalizarChaveAcessoNFSe(CHAVE_NUMERICA.substring(1) + "Ç"));
-        //letra fora da inscrição federal e do código de 9 posições (O no lugar de 0 no município ou no número)
-        Assertions.assertThrows(IllegalArgumentException.class, () -> NFSeUtils.normalizarChaveAcessoNFSe("O" + CHAVE_NUMERICA.substring(1)));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> NFSeUtils.normalizarChaveAcessoNFSe(CHAVE_NUMERICA.substring(0, 30) + "O" + CHAVE_NUMERICA.substring(31)));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> NFSeUtils.normalizarChaveAcessoNFSe(CHAVE_RELEASE_3.substring(0, 49) + "X"));
-        //CPF (tipo 1) com letra
-        final var chaveCpf = "2612505" + "1" + "1" + "000123456789O1" + "0000000006854" + "2512" + "000012345" + "9";
-        Assertions.assertEquals(50, chaveCpf.length());
-        Assertions.assertThrows(IllegalArgumentException.class, () -> NFSeUtils.normalizarChaveAcessoNFSe(chaveCpf));
         //caractere que vira letra ao passar para maiúsculas também é recusado
         Assertions.assertThrows(IllegalArgumentException.class, () -> NFSeUtils.normalizarChaveAcessoNFSe(CHAVE_NUMERICA.substring(0, 49) + "ß"));
         Assertions.assertThrows(IllegalArgumentException.class, () -> NFSeUtils.normalizarChaveAcessoNFSe(CHAVE_NUMERICA.substring(0, 49) + "ı"));
