@@ -92,7 +92,7 @@ final class DanfseNota {
     }
 
     /**
-     * @return chave de acesso com 50 dígitos
+     * @return chave de acesso com 50 posições
      */
     String chaveAcesso() {
         return DanfseFormatador.chaveAcesso(inf().getId());

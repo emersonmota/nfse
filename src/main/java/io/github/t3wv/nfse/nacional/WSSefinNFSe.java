@@ -42,8 +42,9 @@ public class WSSefinNFSe implements NFSeLogger {
     /**
      * Busca uma NFS-e (Nota Fiscal de Serviços Eletrônica) pelo número de chave de acesso.
      *
-     * <p>A chave de acesso é normalizada antes da consulta, removendo quaisquer caracteres
-     * não numéricos. Após a normalização, é validado se a chave possui exatamente 50 dígitos.
+     * <p>A chave de acesso é normalizada antes da consulta por
+     * {@link NFSeUtils#normalizarChaveAcessoNFSe(String)}: saem separadores e o prefixo {@code NFS},
+     * e a chave precisa ter exatamente 50 letras ou dígitos.
      * A requisição é direcionada ao ambiente de homologação ou produção conforme a configuração
      * definida em {@code config.isTeste()}.
      *
@@ -59,30 +60,25 @@ public class WSSefinNFSe implements NFSeLogger {
      *       {@link NFSeSefinNacionalResponseErro} contendo os detalhes do erro retornado pela API.
      * </ul>
      *
-     * @param chaveAcesso chave de acesso da NFS-e, podendo conter caracteres não numéricos
-     *                    que serão removidos automaticamente antes da validação e consulta;
-     *                    após normalização, deve conter exatamente 50 dígitos numéricos
+     * @param chaveAcesso chave de acesso da NFS-e, podendo conter separadores, que são removidos
+     *                    antes da validação e da consulta; após a normalização, deve conter
+     *                    exatamente 50 letras ou dígitos
      * @return um {@link Map.Entry} onde a chave é o código de status HTTP da resposta
      *         ({@link java.net.HttpURLConnection#HTTP_OK} para sucesso, ou o código de erro
      *         correspondente) e o valor é o objeto deserializado da resposta
      *         ({@link NFSeSefinNacionalGetResponse} ou {@link NFSeSefinNacionalResponseErro})
      * @throws IllegalArgumentException se a chave de acesso normalizada não contiver
-     *                                  exatamente 50 dígitos numéricos
+     *                                  exatamente 50 letras ou dígitos
      * @throws IllegalStateException    se a API retornar um código de status HTTP não tratado
      * @throws Exception                se ocorrer qualquer erro de I/O, URI inválida ou falha
      *                                  na desserialização da resposta
      */
     public Map.Entry<Integer, Object> buscarNFSeByChaveAcesso(final String chaveAcesso) throws Exception {
-        //normaliza a chave de acesso removendo quaisquer caracteres não numéricos
-        final var chaveAcessoNormalizada = chaveAcesso.replaceAll("\\D", "");
-
-        //valida o tamanho da chave de acesso, pois precisa ser exatamente 50 caracteres numericos
-        if (!chaveAcessoNormalizada.matches("\\d{50}")) {
-            throw new IllegalArgumentException("Chave de acesso da NFSe deve conter exatamente 50 dígitos numéricos!");
-        }
+        //normaliza e valida a chave: 50 letras ou dígitos (CNPJ alfanumérico e release 3 da NT 009)
+        final var chaveAcessoNormalizada = NFSeUtils.normalizarChaveAcessoNFSe(chaveAcesso);
 
         //busca os dados
-        final var url = new URI(String.format("%s/%s", config.isTeste() ? URL_HOMOLOGACAO_NFSE : URL_PRODUCAO_NFSE, chaveAcesso));
+        final var url = new URI(String.format("%s/%s", config.isTeste() ? URL_HOMOLOGACAO_NFSE : URL_PRODUCAO_NFSE, chaveAcessoNormalizada));
         final var response = new NFSeHttpClient(config).sendGetRequest(url);
         this.getLogger().info("Response status code: {}", response.statusCode());
         this.getLogger().debug("Response status code: {} - {}", response.statusCode(), response.body());

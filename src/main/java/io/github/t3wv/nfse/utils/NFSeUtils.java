@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 
 public abstract class NFSeUtils {
@@ -105,6 +106,29 @@ public abstract class NFSeUtils {
 
         // comparar o digito verificador do cpf com o primeiro resto + o segundo resto
         return nDigVerific.equals(nDigResult);
+    }
+
+    /**
+     * Normaliza e valida a chave de acesso da NFS-e (50 posições).
+     *
+     * <p>A chave pode ter letras: o CNPJ alfanumérico entra na inscrição federal, e o release 3 da
+     * NT SE/CGNFS-e 009 troca o código aleatório de 9 dígitos pela série da DPS mais um código
+     * alfanumérico de 4 posições. Por isso a normalização tira só o que não é letra nem dígito
+     * (pontos, espaços, traços) e o prefixo {@code NFS} do id, e passa as letras para maiúsculas.
+     *
+     * @param chaveAcesso chave de acesso, com ou sem separadores ou o prefixo {@code NFS}
+     * @return a chave com 50 caracteres em {@code [0-9A-Z]}
+     * @throws IllegalArgumentException se a chave normalizada não tiver 50 letras ou dígitos
+     */
+    public static String normalizarChaveAcessoNFSe(final String chaveAcesso) {
+        var chave = StringUtils.defaultString(chaveAcesso).replaceAll("[^0-9A-Za-z]", "").toUpperCase(Locale.ROOT);
+        if (chave.length() == 53 && chave.startsWith("NFS")) {
+            chave = chave.substring(3);
+        }
+        if (!chave.matches("[0-9A-Z]{50}")) {
+            throw new IllegalArgumentException("Chave de acesso da NFSe deve conter exatamente 50 letras ou dígitos!");
+        }
+        return chave;
     }
 
     /**

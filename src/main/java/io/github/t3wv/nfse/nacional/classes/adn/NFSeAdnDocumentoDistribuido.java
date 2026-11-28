@@ -47,7 +47,7 @@ public class NFSeAdnDocumentoDistribuido {
     }
 
     /**
-     * Chave de acesso do documento. Atenção: a chave da NFS-e tem <b>50 dígitos</b>, e não 44
+     * Chave de acesso do documento. Atenção: a chave da NFS-e tem <b>50 posições</b>, e não 44
      * como a da NF-e.
      */
     public String getChaveAcesso() {

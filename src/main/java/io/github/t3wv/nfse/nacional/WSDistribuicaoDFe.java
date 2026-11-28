@@ -94,21 +94,16 @@ public class WSDistribuicaoDFe implements NFSeLogger {
     /**
      * Consulta os DF-e do tipo Evento vinculados a uma chave de acesso.
      *
-     * @param chaveAcesso Chave de acesso da NFS-e, podendo conter caracteres não numéricos que
-     *                    serão removidos automaticamente; após normalização, deve conter
-     *                    exatamente 50 dígitos.
+     * @param chaveAcesso Chave de acesso da NFS-e, podendo conter separadores, que são removidos
+     *                    automaticamente; após a normalização, deve conter exatamente 50 letras
+     *                    ou dígitos.
      * @return Objeto {@link NFSeAdnLoteDistribuicaoResponse} com os eventos da chave.
-     * @throws IllegalArgumentException Se a chave de acesso normalizada não tiver 50 dígitos.
+     * @throws IllegalArgumentException Se a chave de acesso normalizada não tiver 50 letras ou dígitos.
      * @throws Exception                Se ocorrer um erro durante a requisição ou no processamento da resposta.
      */
     public NFSeAdnLoteDistribuicaoResponse consultarEventosPorChaveAcesso(final String chaveAcesso) throws Exception {
-        //normaliza a chave de acesso removendo quaisquer caracteres não numéricos
-        final var chaveAcessoNormalizada = StringUtils.defaultString(chaveAcesso).replaceAll("\\D", "");
-
-        //valida o tamanho da chave de acesso, pois precisa ser exatamente 50 caracteres numericos
-        if (!chaveAcessoNormalizada.matches("\\d{50}")) {
-            throw new IllegalArgumentException("Chave de acesso da NFSe deve conter exatamente 50 dígitos numéricos!");
-        }
+        //normaliza e valida a chave: 50 letras ou dígitos (CNPJ alfanumérico e release 3 da NT 009)
+        final var chaveAcessoNormalizada = NFSeUtils.normalizarChaveAcessoNFSe(chaveAcesso);
 
         final var url = new URI("%s/NFSe/%s/Eventos".formatted(this.getUrlBase(), chaveAcessoNormalizada));
         return this.executarConsulta(url);
