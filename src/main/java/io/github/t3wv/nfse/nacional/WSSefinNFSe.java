@@ -43,8 +43,8 @@ public class WSSefinNFSe implements NFSeLogger {
      * Busca uma NFS-e (Nota Fiscal de Serviços Eletrônica) pelo número de chave de acesso.
      *
      * <p>A chave de acesso é normalizada antes da consulta por
-     * {@link NFSeUtils#normalizarChaveAcessoNFSe(String)}: saem separadores e o prefixo {@code NFS},
-     * e a chave precisa ter exatamente 50 letras ou dígitos.
+     * {@link NFSeUtils#normalizarChaveAcessoNFSe(String)}: saem separadores e o prefixo {@code NFS}
+     * ou {@code NFSe}, e a chave precisa ter exatamente 50 letras ou dígitos.
      * A requisição é direcionada ao ambiente de homologação ou produção conforme a configuração
      * definida em {@code config.isTeste()}.
      *
@@ -103,7 +103,7 @@ public class WSSefinNFSe implements NFSeLogger {
             return NFSeUtils.decodeXmlGZipB64(nfse.getNfseXmlGZipB64());
         } else {
             final var erro = (NFSeSefinNacionalResponseErro) response.getValue();
-            throw new Exception("Não foi possível obter o xml da nota fiscal via chave de acesso '%s': [HTTP response code %s] - %s".formatted(nfseChaveAcesso, response.getKey(), erro.getErro().stream().map(e -> "%s - %s;".formatted(e.getCodigo(), e.getDescricao())).collect(Collectors.joining())));
+            throw new Exception("Não foi possível obter o xml da nota fiscal via chave de acesso '%s': [HTTP response code %s] - %s".formatted(NFSeUtils.normalizarChaveAcessoNFSe(nfseChaveAcesso), response.getKey(), erro.getErro().stream().map(e -> "%s - %s;".formatted(e.getCodigo(), e.getDescricao())).collect(Collectors.joining())));
         }
     }
 
@@ -242,7 +242,7 @@ public class WSSefinNFSe implements NFSeLogger {
      * @throws Exception Caso erro.
      */
     public Map.Entry<Integer, Object> solicitarEventos(final String chave, final String codigoEvento, final Integer seq) throws Exception {
-        final var uri = new URI(String.format("%s/%s/eventos/%s/%s", config.isTeste() ? URL_HOMOLOGACAO_NFSE : URL_PRODUCAO_NFSE, chave, ObjectUtils.firstNonNull(codigoEvento, "="), ObjectUtils.firstNonNull(seq, "=")));
+        final var uri = new URI(String.format("%s/%s/eventos/%s/%s", config.isTeste() ? URL_HOMOLOGACAO_NFSE : URL_PRODUCAO_NFSE, NFSeUtils.normalizarChaveAcessoNFSe(chave), ObjectUtils.firstNonNull(codigoEvento, "="), ObjectUtils.firstNonNull(seq, "=")));
         final var response = new NFSeHttpClient(config).sendGetRequest(uri);
         return switch (response.statusCode()) {
             case HttpURLConnection.HTTP_OK -> new AbstractMap.SimpleEntry<>(HttpURLConnection.HTTP_OK, this.objectMapper.convertValue(this.objectMapper.readTree(response.body()), NFSeSefinNacionalEventosPostResponseSucesso.class));

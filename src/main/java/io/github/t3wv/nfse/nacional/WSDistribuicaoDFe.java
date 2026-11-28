@@ -94,9 +94,9 @@ public class WSDistribuicaoDFe implements NFSeLogger {
     /**
      * Consulta os DF-e do tipo Evento vinculados a uma chave de acesso.
      *
-     * @param chaveAcesso Chave de acesso da NFS-e, podendo conter separadores, que são removidos
-     *                    automaticamente; após a normalização, deve conter exatamente 50 letras
-     *                    ou dígitos.
+     * @param chaveAcesso Chave de acesso da NFS-e, normalizada por
+     *                    {@link NFSeUtils#normalizarChaveAcessoNFSe(String)} (sem separadores e sem
+     *                    o prefixo {@code NFS}); deve ter exatamente 50 letras ou dígitos.
      * @return Objeto {@link NFSeAdnLoteDistribuicaoResponse} com os eventos da chave.
      * @throws IllegalArgumentException Se a chave de acesso normalizada não tiver 50 letras ou dígitos.
      * @throws Exception                Se ocorrer um erro durante a requisição ou no processamento da resposta.

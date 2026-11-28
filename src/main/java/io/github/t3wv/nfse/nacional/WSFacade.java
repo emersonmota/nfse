@@ -144,7 +144,8 @@ public class WSFacade {
      *
      * <p>A chave de acesso é normalizada antes da consulta por
      * {@link io.github.t3wv.nfse.utils.NFSeUtils#normalizarChaveAcessoNFSe(String)}: saem
-     * separadores e o prefixo {@code NFS}, e a chave precisa ter exatamente 50 letras ou dígitos.
+     * separadores e o prefixo {@code NFS} ou {@code NFSe}, e a chave precisa ter exatamente 50
+     * letras ou dígitos.
      * A requisição é direcionada ao ambiente de homologação ou produção conforme a configuração
      * definida em {@code config.isTeste()}.
      *
