@@ -122,18 +122,20 @@ public abstract class NFSeUtils {
      * @throws IllegalArgumentException se a chave normalizada não tiver 50 letras ou dígitos
      */
     public static String normalizarChaveAcessoNFSe(final String chaveAcesso) {
-        //tira só separadores: um caractere inválido no meio da chave tem de ser recusado, não apagado
-        var chave = StringUtils.defaultString(chaveAcesso).replaceAll("[\\s.\\-/]", "").toUpperCase(Locale.ROOT);
-        chave = chave.replaceFirst("^NFSE?(?=[0-9A-Z]{50}$)", "");
-        if (!chave.matches("[0-9A-Z]{50}")) {
+        //tira só separadores (inclusive espaço não separável): caractere inválido é recusado, não apagado
+        final var chave = StringUtils.defaultString(chaveAcesso)
+                .replaceAll("[\\p{Z}\\s.\\-/]", "")
+                .replaceFirst("(?i)^NFSE?(?=[0-9A-Za-z]{50}$)", "");
+        //confere antes de passar para maiúsculas: toUpperCase transforma ß em SS e ı em I
+        if (!chave.matches("[0-9A-Za-z]{50}")) {
             throw new IllegalArgumentException("Chave de acesso da NFSe deve conter exatamente 50 letras ou dígitos!");
         }
-        return chave;
+        return chave.toUpperCase(Locale.ROOT);
     }
 
     /**
      * Gera o ID do Pedido de Registro de Evento conforme o layout definido na especificação técnica
-     * "PRE" + Chave de Acesso da NFSe (44) + Código do Evento (6) + Número do Pedido de Registro do Evento (3)
+     * "PRE" + Chave de Acesso da NFSe (50) + Código do Evento (6)
      *
      * @param evento Evento para geração do ID
      * @return ID do Pedido de Registro de Evento conforme o layout definido
@@ -152,7 +154,7 @@ public abstract class NFSeUtils {
 //        assert numeroPedidoRegistroEvento != null : "Número do Pedido de Registro do Evento deve estar preenchido para gerar o ID";
 
         return String.format("PRE%s%s",
-                chaveAcessoNFSE,
+                normalizarChaveAcessoNFSe(chaveAcessoNFSE),
                 codigoEvento
 //            ,
 //                StringUtils.leftPad(numeroPedidoRegistroEvento, 1, '0')

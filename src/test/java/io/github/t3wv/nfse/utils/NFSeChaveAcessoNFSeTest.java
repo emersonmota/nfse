@@ -36,6 +36,7 @@ public class NFSeChaveAcessoNFSeTest {
         final var chave = CHAVE_RELEASE_3;
         Assertions.assertEquals(chave, NFSeUtils.normalizarChaveAcessoNFSe("NFS" + chave));
         Assertions.assertEquals(chave, NFSeUtils.normalizarChaveAcessoNFSe("NFSe " + chave));
+        Assertions.assertEquals(chave, NFSeUtils.normalizarChaveAcessoNFSe(chave.substring(0, 25) + "\u00a0" + chave.substring(25)));
         Assertions.assertEquals(chave, NFSeUtils.normalizarChaveAcessoNFSe(chave.substring(0, 10) + "." + chave.substring(10, 20) + "/" + chave.substring(20)));
         Assertions.assertEquals(chave, NFSeUtils.normalizarChaveAcessoNFSe(" " + chave.substring(0, 25) + "-" + chave.substring(25).toLowerCase() + " "));
     }
@@ -54,6 +55,9 @@ public class NFSeChaveAcessoNFSeTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> NFSeUtils.normalizarChaveAcessoNFSe(CHAVE_NUMERICA + "1"));
         Assertions.assertThrows(IllegalArgumentException.class, () -> NFSeUtils.normalizarChaveAcessoNFSe("ABC" + CHAVE_NUMERICA));
         Assertions.assertThrows(IllegalArgumentException.class, () -> NFSeUtils.normalizarChaveAcessoNFSe(CHAVE_NUMERICA.substring(1) + "Ç"));
+        //caractere que vira letra ao passar para maiúsculas também é recusado
+        Assertions.assertThrows(IllegalArgumentException.class, () -> NFSeUtils.normalizarChaveAcessoNFSe(CHAVE_NUMERICA.substring(0, 48) + "ß"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> NFSeUtils.normalizarChaveAcessoNFSe(CHAVE_NUMERICA.substring(0, 49) + "ı"));
         //caractere inválido no meio é recusado, não apagado
         Assertions.assertThrows(IllegalArgumentException.class, () -> NFSeUtils.normalizarChaveAcessoNFSe(CHAVE_NUMERICA + "Ç"));
         Assertions.assertThrows(IllegalArgumentException.class, () -> NFSeUtils.normalizarChaveAcessoNFSe(CHAVE_NUMERICA.substring(0, 20) + "_" + CHAVE_NUMERICA.substring(20)));

@@ -94,16 +94,18 @@ public class WSSefinNFSe implements NFSeLogger {
      *
      * @param nfseChaveAcesso chave de acesso da nfse
      * @return XML da NFSe
+     * @throws IllegalArgumentException se a chave não tiver 50 letras ou dígitos, depois de normalizada
      * @throws Exception Caso erro.
      */
     public String buscarNFSeXmlByChaveAcesso(final String nfseChaveAcesso) throws Exception {
-        final var response = this.buscarNFSeByChaveAcesso(nfseChaveAcesso);
+        final var chaveAcessoNormalizada = NFSeUtils.normalizarChaveAcessoNFSe(nfseChaveAcesso);
+        final var response = this.buscarNFSeByChaveAcesso(chaveAcessoNormalizada);
         if (response.getKey().equals(HttpURLConnection.HTTP_OK)) {
             final var nfse = (NFSeSefinNacionalGetResponse) response.getValue();
             return NFSeUtils.decodeXmlGZipB64(nfse.getNfseXmlGZipB64());
         } else {
             final var erro = (NFSeSefinNacionalResponseErro) response.getValue();
-            throw new Exception("Não foi possível obter o xml da nota fiscal via chave de acesso '%s': [HTTP response code %s] - %s".formatted(NFSeUtils.normalizarChaveAcessoNFSe(nfseChaveAcesso), response.getKey(), erro.getErro().stream().map(e -> "%s - %s;".formatted(e.getCodigo(), e.getDescricao())).collect(Collectors.joining())));
+            throw new Exception("Não foi possível obter o xml da nota fiscal via chave de acesso '%s': [HTTP response code %s] - %s".formatted(chaveAcessoNormalizada, response.getKey(), erro.getErro().stream().map(e -> "%s - %s;".formatted(e.getCodigo(), e.getDescricao())).collect(Collectors.joining())));
         }
     }
 
@@ -213,7 +215,8 @@ public class WSSefinNFSe implements NFSeLogger {
             throw new IllegalStateException("O ambiente do evento (%s) não corresponde ao ambiente do sistema (%s)!".formatted(solicitacaoHomologacao ? "HOMOLOGAÇÃO" : "PRODUÇÃO", sistemaHomologacao ? "HOMOLOGAÇÃO" : "PRODUÇÃO"));
         }
 
-        // Gera o id e seta no objeto para preenchimento no xml
+        // Normaliza a chave (vai no XML, no id e na URL), gera o id e seta no objeto para preenchimento no xml
+        pedidoRegistroEvento.getInfPedReg().setChaveAcessoNFSE(NFSeUtils.normalizarChaveAcessoNFSe(pedidoRegistroEvento.getInfPedReg().getChaveAcessoNFSE()));
         pedidoRegistroEvento.getInfPedReg().setId(NFSeUtils.gerarEventoId(pedidoRegistroEvento));
 
         final String body;
@@ -239,6 +242,7 @@ public class WSSefinNFSe implements NFSeLogger {
      * @param codigoEvento Codigo do evento
      * @param seq Sequencial do evento
      * @return Eventos da NFSe.
+     * @throws IllegalArgumentException se a chave não tiver 50 letras ou dígitos, depois de normalizada
      * @throws Exception Caso erro.
      */
     public Map.Entry<Integer, Object> solicitarEventos(final String chave, final String codigoEvento, final Integer seq) throws Exception {
