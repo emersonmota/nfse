@@ -190,8 +190,17 @@ public class WSSefinNFSe implements NFSeLogger {
 
     /**
      * Emite um evento de cancelamento para uma NFSe
+     *
+     * <p>A chave de acesso do pedido é normalizada por
+     * {@link NFSeUtils#normalizarChaveAcessoNFSe(String)} e gravada de volta no objeto recebido,
+     * antes de qualquer outro preenchimento.
+     *
+     * @throws IllegalArgumentException se a chave do pedido não for válida, antes de qualquer envio
      */
     public Map.Entry<Integer, Object> enviarPedidoRegistroEvento(final NFSeSefinNacionalPedRegEvt pedidoRegistroEvento) throws Exception {
+        //normaliza a chave antes de tudo: ela vai no XML, no id e na URL
+        pedidoRegistroEvento.getInfPedReg().setChaveAcessoNFSE(NFSeUtils.normalizarChaveAcessoNFSe(pedidoRegistroEvento.getInfPedReg().getChaveAcessoNFSE()));
+
         //gera os defaults
         if (pedidoRegistroEvento.getInfPedReg().getTpAmb() == null) {
             pedidoRegistroEvento.getInfPedReg().setTpAmb(this.config.isTeste() ? NFSeSefinNacionalTipoAmbiente.HOMOLOGACAO : NFSeSefinNacionalTipoAmbiente.PRODUCAO);
@@ -215,8 +224,7 @@ public class WSSefinNFSe implements NFSeLogger {
             throw new IllegalStateException("O ambiente do evento (%s) não corresponde ao ambiente do sistema (%s)!".formatted(solicitacaoHomologacao ? "HOMOLOGAÇÃO" : "PRODUÇÃO", sistemaHomologacao ? "HOMOLOGAÇÃO" : "PRODUÇÃO"));
         }
 
-        // Normaliza a chave (vai no XML, no id e na URL), gera o id e seta no objeto para preenchimento no xml
-        pedidoRegistroEvento.getInfPedReg().setChaveAcessoNFSE(NFSeUtils.normalizarChaveAcessoNFSe(pedidoRegistroEvento.getInfPedReg().getChaveAcessoNFSE()));
+        // Gera o id e seta no objeto para preenchimento no xml
         pedidoRegistroEvento.getInfPedReg().setId(NFSeUtils.gerarEventoId(pedidoRegistroEvento));
 
         final String body;
