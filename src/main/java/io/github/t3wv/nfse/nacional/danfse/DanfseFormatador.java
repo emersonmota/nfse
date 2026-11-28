@@ -226,7 +226,7 @@ final class DanfseFormatador {
 
     /**
      * @param id identificador da NFS-e ("NFS" seguido da chave de acesso)
-     * @return chave de acesso com 50 dígitos, sem o prefixo "NFS" (item 2.4.5)
+     * @return chave de acesso com 50 posições, sem o prefixo "NFS" (item 2.4.5)
      */
     static String chaveAcesso(final String id) {
         final var valor = texto(id);

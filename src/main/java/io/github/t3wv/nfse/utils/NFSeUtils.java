@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 
 public abstract class NFSeUtils {
@@ -108,8 +109,36 @@ public abstract class NFSeUtils {
     }
 
     /**
+     * Normaliza e valida a chave de acesso da NFS-e (50 posições).
+     *
+     * <p>A chave pode ter letras: o CNPJ alfanumérico entra na inscrição federal, e o release 3 da
+     * NT SE/CGNFS-e 009 troca o código aleatório de 9 dígitos pela série da DPS mais um código
+     * alfanumérico de 4 posições. Por isso a normalização tira só separadores (espaços, pontos,
+     * traços e barras) e o prefixo {@code NFS} ou {@code NFSe}, passa as letras para maiúsculas e
+     * recusa qualquer outro caractere. A posição das letras não é conferida: a NT 009 com o leiaute
+     * da chave do release 3 ainda não foi publicada, e uma chave válida da SEFIN não pode ser barrada
+     * aqui por um palpite.
+     *
+     * @param chaveAcesso chave de acesso, com ou sem separadores ou o prefixo {@code NFS}/{@code NFSe}
+     * @return a chave com 50 caracteres em {@code [0-9A-Z]}
+     * @throws IllegalArgumentException se a chave normalizada não tiver 50 letras ou dígitos
+     */
+    public static String normalizarChaveAcessoNFSe(final String chaveAcesso) {
+        //tira só separadores (inclusive espaço não separável): caractere inválido é recusado, não apagado
+        final var chave = StringUtils.defaultString(chaveAcesso)
+                .replaceAll("[\\p{Z}\\p{Cf}\\s.\\-/]", "")
+                .replaceFirst("(?i)^NFSE?(?=[0-9A-Za-z]{50}$)", "");
+        //confere antes de passar para maiúsculas (toUpperCase transforma ß em SS e ı em I). Não confere
+        //posição: a NT 009 com o leiaute da chave do release 3 ainda não saiu, e a chave vem da SEFIN
+        if (!chave.matches("[0-9A-Za-z]{50}")) {
+            throw new IllegalArgumentException("Chave de acesso da NFSe deve conter exatamente 50 letras ou dígitos!");
+        }
+        return chave.toUpperCase(Locale.ROOT);
+    }
+
+    /**
      * Gera o ID do Pedido de Registro de Evento conforme o layout definido na especificação técnica
-     * "PRE" + Chave de Acesso da NFSe (44) + Código do Evento (6) + Número do Pedido de Registro do Evento (3)
+     * "PRE" + Chave de Acesso da NFSe (50) + Código do Evento (6)
      *
      * @param evento Evento para geração do ID
      * @return ID do Pedido de Registro de Evento conforme o layout definido

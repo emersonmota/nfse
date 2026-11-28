@@ -78,7 +78,7 @@ public class WSFacade {
     /**
      * Faz o download do XML da NFSe utilizando a chave de acesso da NFSe.
      *
-     * @param nfseChaveAcesso Chave de acesso da NFSe com 50 dígitos.
+     * @param nfseChaveAcesso Chave de acesso da NFSe com 50 letras ou dígitos.
      * @return Array de bytes representando o arquivo XML da NFSe.
      * @throws Exception Se ocorrer um erro durante a requisição ou no processamento da resposta.
      */
@@ -142,8 +142,10 @@ public class WSFacade {
     /**
      * Busca uma NFS-e (Nota Fiscal de Serviços Eletrônica) pelo número de chave de acesso.
      *
-     * <p>A chave de acesso é normalizada antes da consulta, removendo quaisquer caracteres
-     * não numéricos. Após a normalização, é validado se a chave possui exatamente 50 dígitos.
+     * <p>A chave de acesso é normalizada antes da consulta por
+     * {@link io.github.t3wv.nfse.utils.NFSeUtils#normalizarChaveAcessoNFSe(String)}: saem
+     * separadores e o prefixo {@code NFS} ou {@code NFSe}, e a chave precisa ter exatamente 50
+     * letras ou dígitos.
      * A requisição é direcionada ao ambiente de homologação ou produção conforme a configuração
      * definida em {@code config.isTeste()}.
      *
@@ -159,15 +161,15 @@ public class WSFacade {
      *       {@link NFSeSefinNacionalResponseErro} contendo os detalhes do erro retornado pela API.
      * </ul>
      *
-     * @param chaveAcesso chave de acesso da NFS-e, podendo conter caracteres não numéricos
-     *                    que serão removidos automaticamente antes da validação e consulta;
-     *                    após normalização, deve conter exatamente 50 dígitos numéricos
+     * @param chaveAcesso chave de acesso da NFS-e, podendo conter separadores, que são removidos
+     *                    antes da validação e da consulta; após a normalização, deve conter
+     *                    exatamente 50 letras ou dígitos
      * @return um {@link Map.Entry} onde a chave é o código de status HTTP da resposta
      *         ({@link java.net.HttpURLConnection#HTTP_OK} para sucesso, ou o código de erro
      *         correspondente) e o valor é o objeto deserializado da resposta
      *         ({@link NFSeSefinNacionalGetResponse} ou {@link NFSeSefinNacionalResponseErro})
      * @throws IllegalArgumentException se a chave de acesso normalizada não contiver
-     *                                  exatamente 50 dígitos numéricos
+     *                                  exatamente 50 letras ou dígitos
      * @throws IllegalStateException    se a API retornar um código de status HTTP não tratado
      * @throws Exception                se ocorrer qualquer erro de I/O, URI inválida ou falha
      *                                  na desserialização da resposta
@@ -236,7 +238,7 @@ public class WSFacade {
     /**
      * Consulta, no ADN, os DF-e do tipo Evento vinculados a uma chave de acesso.
      *
-     * @param chaveAcesso Chave de acesso da NFSe com 50 dígitos.
+     * @param chaveAcesso Chave de acesso da NFSe com 50 letras ou dígitos.
      * @return Objeto {@link NFSeAdnLoteDistribuicaoResponse} com os eventos da chave.
      * @throws Exception Se ocorrer um erro durante a requisição ou no processamento da resposta.
      */
