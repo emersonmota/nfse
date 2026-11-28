@@ -115,23 +115,27 @@ public abstract class NFSeUtils {
      * NT SE/CGNFS-e 009 troca o código aleatório de 9 dígitos pela série da DPS mais um código
      * alfanumérico de 4 posições. Por isso a normalização tira só separadores (espaços, pontos,
      * traços e barras) e o prefixo {@code NFS} ou {@code NFSe}, passa as letras para maiúsculas e
-     * recusa qualquer outro caractere. Letra só é aceita onde o leiaute pode ter: na inscrição federal
-     * (posições 10 a 23) e no código de 9 posições (41 a 49); o resto da chave é numérico.
+     * recusa qualquer outro caractere. Letra só é aceita onde o leiaute pode ter: no CNPJ (posições 10
+     * a 23, com tipo de inscrição 2) e no código de 9 posições (41 a 49); o resto da chave é numérico.
      *
      * @param chaveAcesso chave de acesso, com ou sem separadores ou o prefixo {@code NFS}/{@code NFSe}
      * @return a chave com 50 caracteres em {@code [0-9A-Z]}
      * @throws IllegalArgumentException se a chave normalizada não tiver 50 letras ou dígitos nas posições
-     *                                  do leiaute
+     *                                  do leiaute, com a mensagem do que está errado
      */
     public static String normalizarChaveAcessoNFSe(final String chaveAcesso) {
         //tira só separadores (inclusive espaço não separável): caractere inválido é recusado, não apagado
         final var chave = StringUtils.defaultString(chaveAcesso)
-                .replaceAll("[\\p{Z}\\s.\\-/]", "")
+                .replaceAll("[\\p{Z}\\p{Cf}\\s.\\-/]", "")
                 .replaceFirst("(?i)^NFSE?(?=[0-9A-Za-z]{50}$)", "");
         //confere antes de passar para maiúsculas (toUpperCase transforma ß em SS e ı em I). Letras só na
         //inscrição federal (CNPJ alfanumérico) e no código de 9 posições (série + código do release 3)
-        if (!chave.matches("[0-9]{9}[0-9A-Za-z]{14}[0-9]{17}[0-9A-Za-z]{9}[0-9]")) {
+        if (!chave.matches("[0-9A-Za-z]{50}")) {
             throw new IllegalArgumentException("Chave de acesso da NFSe deve conter exatamente 50 letras ou dígitos!");
+        }
+        //CPF (tipo 1) é só número; CNPJ (tipo 2) pode ter letra
+        if (!chave.matches("[0-9]{8}(1[0-9]{14}|2[0-9A-Za-z]{14})[0-9]{17}[0-9A-Za-z]{9}[0-9]")) {
+            throw new IllegalArgumentException("Chave de acesso da NFSe só pode ter letra no CNPJ e no código de 9 posições!");
         }
         return chave.toUpperCase(Locale.ROOT);
     }
